@@ -11,7 +11,16 @@ export default registerAs(
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'nest_mysql',
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    synchronize: process.env.NODE_ENV === 'development', // ¡Cuidado en producción!
+    synchronize: process.env.NODE_ENV === 'development',
     logging: false,
+    connectTimeout: 60000,
+    extra: {
+      connectionLimit: 10,
+      waitForConnections: true,
+      queueLimit: 0,
+    },
+    retryAttempts: 10,
+    retryDelay: 3000,
+    autoLoadEntities: true,
   }),
 );
