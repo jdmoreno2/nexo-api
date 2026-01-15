@@ -3,6 +3,7 @@ import { CreatePermissionDto } from './create-permission.dto';
 import { IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 export class UpdatePermissionDto extends PartialType(CreatePermissionDto) {
+    id?: number
 
     @ApiPropertyOptional({ description: 'Estado del permiso', example: 1, required: false })
     @IsOptional()

@@ -2,33 +2,76 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PermissionsService } from './permissions.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { PermissionExistsPipe } from './decorators/permission.validator';
+import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 
 @Controller('permissions')
-export class PermissionsController {
-  constructor(private readonly permissionsService: PermissionsService) {}
+@ApiTags('Permissions')
+@ApiResponse(
+  {
+    status: 401,
+    description: 'No autenticado',
+  }
+)
+@ApiResponse(
+  {
+    status: 400,
+    description: 'Datos de entrada inválidos',
+  }
+)
+@ApiResponse(
+  {
+    status: 403,
+    description: 'Sin permisos para crear permisos',
+  }
+)
+@ApiResponse(
+  {
+    status: 404,
+    description: 'Permiso no encontrado',
+  }
+)
 
+export class PermissionsController {
+  constructor(private readonly permissionsService: PermissionsService) { }
+
+  @ApiOperation({ summary: 'Crear permiso' })
   @Post()
-  create(@Body() createPermissionDto: CreatePermissionDto) {
+  @ApiOkResponse({ description: 'Permiso creado exitosamente.', type: GenericResponsesDto })
+  create(@Body() createPermissionDto: CreatePermissionDto): Promise<GenericResponsesDto> {
     return this.permissionsService.create(createPermissionDto);
   }
 
+  @ApiOperation({ summary: 'Listar todos permisos' })
   @Get()
   findAll() {
     return this.permissionsService.findAll();
   }
 
+  @ApiOperation({ summary: 'Listar permiso por id' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', PermissionExistsPipe) id: string) {
     return this.permissionsService.findOne(+id);
   }
 
+  @ApiOperation({ summary: 'Actualizar permiso por idd' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePermissionDto: UpdatePermissionDto) {
+  @ApiOkResponse({ description: 'Permiso actualizado exitosamente.', type: GenericResponsesDto })
+  update(
+    @Param('id', PermissionExistsPipe) id: string,
+    @Body() updatePermissionDto: UpdatePermissionDto
+  ): Promise<GenericResponsesDto> {
+    updatePermissionDto.id = +id;
     return this.permissionsService.update(+id, updatePermissionDto);
   }
 
+  @ApiOperation({ summary: 'Eliminar permiso por id' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @ApiOkResponse({ description: 'Permiso eliminado exitosamente.', type: GenericResponsesDto })
+  remove(
+    @Param('id', PermissionExistsPipe) id: string
+  ): Promise<GenericResponsesDto> {
     return this.permissionsService.remove(+id);
   }
 }
