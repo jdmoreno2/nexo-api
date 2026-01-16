@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNotEmpty, IsOptional, IsString, Validate } from "class-validator";
-import { PermissionAlreadyExistsConstraint } from "../decorators/permission.validator";
+import { PermissionAlreadyExistsConstraint } from "../../decorators/permission.validator";
 
 
 export class CreatePermissionDto {

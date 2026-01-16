@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PermissionsService } from './permissions.service';
-import { CreatePermissionDto } from './dto/create-permission.dto';
-import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { CreatePermissionDto } from './dto/requests/create-permission.dto';
+import { UpdatePermissionDto } from './dto/requests/update-permission.dto';
 import { PermissionExistsPipe } from './decorators/permission.validator';
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
@@ -55,11 +55,12 @@ export class PermissionsController {
 
   @ApiOperation({ summary: 'Listar permiso por id' })
   @Get(':id')
+  @ApiOkResponse({ description: 'Permiso actualizado exitosamente.', type: ResponsePermissionDto })
   findOne(@Param('id', PermissionExistsPipe) id: string) {
     return this.permissionsService.findOne(+id);
   }
 
-  @ApiOperation({ summary: 'Actualizar permiso por idd' })
+  @ApiOperation({ summary: 'Actualizar permiso por id' })
   @Patch(':id')
   @ApiOkResponse({ description: 'Permiso actualizado exitosamente.', type: GenericResponsesDto })
   update(
