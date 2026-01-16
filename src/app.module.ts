@@ -9,6 +9,7 @@ import { validateEnv } from './config/env.validation';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SuscribersModule } from './modules/suscribers/suscribers.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
     }),
     SuscribersModule,
     PermissionsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
