@@ -1,8 +1,15 @@
-import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { CreateSuscriberDto } from './create-suscriber.dto';
 import { IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 export class UpdateSuscriberDto extends PartialType(CreateSuscriberDto) {
+  @ApiProperty({
+    description: 'ID de la compañia',
+    example: 1
+  })
+  @IsNumber({}, { message: 'Formato de Datos invalido: id debe ser un número entero.' })
+  id: number;
+
   @ApiPropertyOptional({
     description: 'Estado de la compañia',
     example: 1

@@ -1,6 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm/browser";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('Suscribers')
+@Entity('suscribers')
 export class Suscriber {
   @PrimaryGeneratedColumn()
   id: number;
@@ -8,7 +8,7 @@ export class Suscriber {
   @Column()
   company_name: string;
 
-  @Column()
+  @Column({ unique: true })
   nit: string;
 
   @Column()
