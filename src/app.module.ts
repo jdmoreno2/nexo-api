@@ -8,6 +8,7 @@ import swaggerConfig from './config/swagger.config';
 import { validateEnv } from './config/env.validation';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SuscribersModule } from './modules/suscribers/suscribers.module';
+import { PermissionsModule } from './modules/permissions/permissions.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { SuscribersModule } from './modules/suscribers/suscribers.module';
       }),
     }),
     SuscribersModule,
+    PermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

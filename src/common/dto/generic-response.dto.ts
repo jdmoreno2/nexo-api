@@ -1,22 +1,23 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class GenericResponseDto {
+export class GenericResponsesDto {
+
   @ApiProperty({
     description: 'Mensaje de respuesta',
-    example: 'Dato Creado'
+    example: 'Dato creado/actualizado/eliminado',
   })
-  message: string;
+  message: string
 
   @ApiProperty({
     description: 'Código de estado de la respuesta',
-    example: 201
+    example: 201,
   })
-  statusCode: number;
-
+  statusCode: number
 
   @ApiProperty({
     description: 'Nombre del error',
-    example: ''
+    example: 'Not Found'
   })
-  error: string;
+  error: string
+
 }
