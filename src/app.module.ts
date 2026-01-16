@@ -7,6 +7,7 @@ import databaseConfig from './config/database.config';
 import swaggerConfig from './config/swagger.config';
 import { validateEnv } from './config/env.validation';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SuscribersModule } from './modules/suscribers/suscribers.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 
 @Module({
@@ -23,6 +24,7 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
         ...configService.get('database'),
       }),
     }),
+    SuscribersModule,
     PermissionsModule,
   ],
   controllers: [AppController],

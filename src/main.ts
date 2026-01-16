@@ -2,14 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { useContainer } from 'class-validator';
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
-
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     transform: true,
@@ -20,6 +19,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
   });
+
   // Configuración Swagger
   if (configService.get('swagger.enabled')) {
     const config = new DocumentBuilder()
@@ -39,6 +39,6 @@ async function bootstrap() {
   }
 
   await app.listen(process.env.APP_PORT ?? 3000);
-
+  console.log('Corriendo en el Puerto: ', process.env.APP_PORT ?? 3000);
 }
 bootstrap();
