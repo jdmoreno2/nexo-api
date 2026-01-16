@@ -5,6 +5,9 @@ import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { PermissionExistsPipe } from './decorators/permission.validator';
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
+import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
+import { Permission } from './entities/permission.entity';
+import { ResponsePermissionDto } from './dto/responses/response-permission.dto';
 
 @Controller('permissions')
 @ApiTags('Permissions')
@@ -45,8 +48,9 @@ export class PermissionsController {
 
   @ApiOperation({ summary: 'Listar todos permisos' })
   @Get()
-  findAll() {
-    return this.permissionsService.findAll();
+  @ApiOkResponse({ description: 'Permiso actualizado exitosamente.', type: PaginationDto<Permission> })
+  async findAll(@Query() meta: PaginationRequestMetaDto) {
+    return await this.permissionsService.findAll(meta);
   }
 
   @ApiOperation({ summary: 'Listar permiso por id' })

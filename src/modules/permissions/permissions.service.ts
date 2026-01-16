@@ -24,8 +24,26 @@ export class PermissionsService {
 
   }
 
-  findAll() {
-    return this.permissionRepository.find();
+  async findAll(meta: PaginationResponseMetaDto): Promise<PaginationDto<Permission>> {
+
+    const page = meta?.page || 1;
+    const limit = meta?.limit || 10;
+
+    const [permissions, total] = await this.permissionRepository.findAndCount({
+      order: { [meta.orderBy as string]: meta.order },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      data: permissions,
+      meta: {
+        page: page,
+        limit: limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      }
+    }
   }
 
   findOne(id: number) {
