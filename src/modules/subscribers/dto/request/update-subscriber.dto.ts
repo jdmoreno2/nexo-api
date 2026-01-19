@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { CreateSuscriberDto } from './create-suscriber.dto';
+import { CreateSubscriberDto } from './create-subscriber.dto';
 import { IsNumber, IsOptional, Max, Min } from 'class-validator';
 
-export class UpdateSuscriberDto extends PartialType(CreateSuscriberDto) {
+export class UpdateSubscriberDto extends PartialType(CreateSubscriberDto) {
   @ApiProperty({
     description: 'ID de la compañia',
     example: 1
