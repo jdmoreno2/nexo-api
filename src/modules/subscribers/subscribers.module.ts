@@ -15,5 +15,6 @@ import { subscriberAlreadyExistsConstraint, SubscriberExistsPipe } from './decor
     subscriberAlreadyExistsConstraint,
     SubscriberExistsPipe
   ],
+  exports: [SubscribersService, SubscriberExistsPipe],
 })
 export class SubscribersModule { }
