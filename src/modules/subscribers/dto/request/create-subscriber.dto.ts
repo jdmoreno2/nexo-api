@@ -1,8 +1,8 @@
 import { ApiHideProperty, ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsOptional, IsString, Validate } from "class-validator";
-import { suscriberAlreadyExistsConstraint } from "../../decorators/suscriber.validator";
+import { subscriberAlreadyExistsConstraint } from "../../decorators/subscriber.validator";
 
-export class CreateSuscriberDto {
+export class CreateSubscriberDto {
   @ApiHideProperty()
   id?: number;
 
@@ -20,7 +20,7 @@ export class CreateSuscriberDto {
   })
   @IsString({ message: 'Formato de Datos invalido: nit debe ser una cadena de texto.' })
   @IsNotEmpty({ message: 'Faltan datos necesario: nit.' })
-  @Validate(suscriberAlreadyExistsConstraint)
+  @Validate(subscriberAlreadyExistsConstraint)
   nit: string;
 
   @ApiProperty({

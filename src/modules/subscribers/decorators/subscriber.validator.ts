@@ -4,17 +4,17 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import { SuscribersService } from '../suscribers.service';
+import { SubscribersService } from '../subscribers.service';
 
 @ValidatorConstraint({ name: 'suscriberAlreadyExists', async: true })
 @Injectable()
-export class suscriberAlreadyExistsConstraint implements ValidatorConstraintInterface {
-  constructor(protected readonly suscribersService: SuscribersService) { }
+export class subscriberAlreadyExistsConstraint implements ValidatorConstraintInterface {
+  constructor(protected readonly subscribersService: SubscribersService) { }
 
   async validate(nit: string, args: ValidationArguments) {
     const obj = args.object as any;
     const sucriberId = obj.id;
-    const suscriber = await this.suscribersService.findOneByNit(nit);
+    const suscriber = await this.subscribersService.findOneByNit(nit);
     if (!suscriber) return true;
     if (sucriberId) return suscriber.id == sucriberId;
     return false;
@@ -27,12 +27,12 @@ export class suscriberAlreadyExistsConstraint implements ValidatorConstraintInte
 
 
 @Injectable()
-export class SuscriberExistsPipe implements PipeTransform {
-  constructor(private readonly suscribersService: SuscribersService) { }
+export class SubscriberExistsPipe implements PipeTransform {
+  constructor(private readonly subscribersService: SubscribersService) { }
 
   async transform(id: number) {
-    const suscriber = await this.suscribersService.findOne(id);
-    if (!suscriber) {
+    const subscriber = await this.subscribersService.findOne(id);
+    if (!subscriber) {
       throw new NotFoundException(`Suscriptor con id: ${id} no encontrado.`);
     }
     return id;
