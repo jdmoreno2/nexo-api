@@ -25,6 +25,20 @@ export class subscriberAlreadyExistsConstraint implements ValidatorConstraintInt
   }
 }
 
+@ValidatorConstraint({ name: 'subscriberExists', async: true })
+@Injectable()
+export class SubscriberExistsConstraint implements ValidatorConstraintInterface {
+  constructor(protected readonly subscribersService: SubscribersService) { }
+
+  async validate(id: number) {
+    const subscriber = await this.subscribersService.findOne(id)
+    return !!subscriber;
+  }
+
+  defaultMessage(validationArguments: ValidationArguments): string {
+    return `Suscriptor con id: ${validationArguments.value} no encontrado.`;
+  }
+}
 
 @Injectable()
 export class SubscriberExistsPipe implements PipeTransform {

@@ -1,5 +1,5 @@
-import { Suscriber } from "src/modules/suscribers/entities/suscriber.entity";
-import { Entity, Column, PrimaryGeneratedColumn, ForeignKey } from "typeorm";
+import { Subscriber } from "src/modules/subscribers/entities/subscriber.entity";
+import { Entity, Column, PrimaryGeneratedColumn, ForeignKey, ManyToOne, JoinColumn } from "typeorm";
 
 @Entity('users')
 export class User {
@@ -7,13 +7,19 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({ nullable: false, unique: true })
+    @Column({ nullable: true, unique: true })
+    identifier: number
+
+    @Column({ nullable: false })
+    id_type: string
+
+    @Column({ nullable: false })
     name: string
 
     @Column({ nullable: true })
     lastname?: string
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, unique: true })
     email: string
 
     @Column({ nullable: false })
@@ -31,8 +37,8 @@ export class User {
     @Column({ nullable: true, type: 'timestamp', onUpdate: 'CURRENT_TIMESTAMP' })
     updated_at?: Date
 
-    @ForeignKey(() => Suscriber)
-    @Column({ nullable: true })
-    suscriber_id?: number
+    @ManyToOne(() => Subscriber, (subscriber) => subscriber.id)
+    @JoinColumn({ name: 'subscribers_id' })
+    subscribers_id?: number
 
 }

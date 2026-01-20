@@ -5,6 +5,7 @@ import {
     ValidationArguments,
 } from 'class-validator';
 import { UsersService } from '../users.service';
+import e from 'express';
 
 @ValidatorConstraint({ name: 'userAlreadyExist', async: true })
 @Injectable()
@@ -15,7 +16,7 @@ export class UserAlreadyExistsConstraint implements ValidatorConstraintInterface
 
         const userId = (validationArguments.object as any).id;
 
-        const user = await this.usersService.findOne(id)
+        const user = await this.usersService.findOneByIdentifier(id)
 
         if (!user) return true;
         if (user) return userId === user.id;
@@ -24,7 +25,45 @@ export class UserAlreadyExistsConstraint implements ValidatorConstraintInterface
     }
 
     defaultMessage(validationArguments: ValidationArguments): string {
-        return `El usuario con id: ${validationArguments.value} no está registrado.`;
+        return `El usuario con id: ${validationArguments.value} ya está registrado.`;
     }
 
+}
+
+@ValidatorConstraint({ name: 'emailExists', async: true })
+@Injectable()
+export class emailExistsConstraint implements ValidatorConstraintInterface {
+    constructor(protected readonly usersService: UsersService) { }
+
+    async validate(email: string, validationArguments: ValidationArguments) {
+
+        const userEmail = (validationArguments.object as any).email;
+        const userId = (validationArguments.object as any).id;
+        const emailFounded = await this.usersService.findOneByEmail(email)
+
+        if (!emailFounded) return true;
+        if (userId !== emailFounded.id && emailFounded.email === email)
+            return false;
+        else {
+            return true;
+        }
+
+    }
+
+    defaultMessage(validationArguments: ValidationArguments): string {
+        return `El email: ${validationArguments.value} ya está registrado.`;
+    }
+}
+
+@Injectable()
+export class UserExistsPipe implements PipeTransform {
+    constructor(private readonly usersService: UsersService) { }
+
+    async transform(id: number) {
+        const user = await this.usersService.findOne(id);
+        if (!user) {
+            throw new NotFoundException(`Usuario con id: ${id} no encontrado.`);
+        }
+        return id;
+    }
 }

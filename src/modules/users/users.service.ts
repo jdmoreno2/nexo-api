@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -14,8 +15,21 @@ export class UsersService {
     private readonly userRepository: Repository<User>
   ) { }
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto, file: string) {
+
+    if (file) {
+      createUserDto.avatar = file;
+    }
+
+    const password_hash = bcrypt.hashSync(createUserDto.password, 10);
+
+    createUserDto['password_hash'] = password_hash;
+
+    const newUser = await this.userRepository.save(createUserDto)
+
+    if (newUser) return { message: 'Usuario creado exitosamente', statusCode: 201, error: '' };
+    throw new BadRequestException('Error al crear al usuario')
+
   }
 
   async findAll(meta: PaginationRequestMetaDto): Promise<PaginationDto<User>> {
@@ -38,6 +52,14 @@ export class UsersService {
         totalPages: Math.ceil(total / limit),
       }
     }
+  }
+
+  findOneByIdentifier(identifier: number) {
+    return this.userRepository.findOneBy({ identifier });
+  }
+
+  findOneByEmail(email: string) {
+    return this.userRepository.findOneBy({ email });
   }
 
   findOne(id: number) {
