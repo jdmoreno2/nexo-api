@@ -14,12 +14,12 @@ export class UserAlreadyExistsConstraint implements ValidatorConstraintInterface
 
     async validate(id: any, validationArguments: ValidationArguments) {
 
-        const userId = (validationArguments.object as any).id;
+        const userId = (validationArguments.object as any).identifier;
 
         const user = await this.usersService.findOneByIdentifier(id)
 
         if (!user) return true;
-        if (user) return userId === user.id;
+        if (user) return userId == user.identifier;
         return false;
 
     }
@@ -37,12 +37,12 @@ export class emailExistsConstraint implements ValidatorConstraintInterface {
 
     async validate(email: string, validationArguments: ValidationArguments) {
 
-        const userEmail = (validationArguments.object as any).email;
-        const userId = (validationArguments.object as any).id;
+        const userId = (validationArguments.object as any).identifier;
         const emailFounded = await this.usersService.findOneByEmail(email)
 
+
         if (!emailFounded) return true;
-        if (userId !== emailFounded.id && emailFounded.email === email)
+        if (userId != emailFounded.identifier)
             return false;
         else {
             return true;

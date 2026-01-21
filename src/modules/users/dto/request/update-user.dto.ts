@@ -1,22 +1,15 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsNumberString, IsOptional } from 'class-validator';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
 
-    @ApiProperty({
-        description: 'Id del usuario',
-        example: 1
-    })
-    @IsNumber({}, { message: 'Formato de datos invalido: id debe ser un número entero.' })
-    id?: number;
-
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Estado del usuario',
         example: 1
     })
     @IsOptional()
-    @IsNumber({}, { message: 'Formato de datos invalido: id debe ser un número entero.' })
+    @IsNumberString({}, { message: 'Formato de datos invalido: status debe ser un número entero.' })
     status?: number
 
 }
