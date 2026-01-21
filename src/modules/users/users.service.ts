@@ -66,8 +66,33 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto, file: string) {
+
+
+    if (file) {
+      updateUserDto.avatar = file;
+
+      delete updateUserDto.avatar;
+    } else {
+      delete updateUserDto.avatar;
+    }
+
+    if (updateUserDto.password) {
+      const password_hash = bcrypt.hashSync(updateUserDto.password, 10);
+
+      updateUserDto['password_hash'] = password_hash;
+
+      delete updateUserDto.password;
+    } else {
+      delete updateUserDto.password;
+    }
+
+    const updatedUser = await this.userRepository.update(id, updateUserDto)
+
+    if (updatedUser.affected === 0) throw new BadRequestException('Error al actualizar el usuario')
+
+    return { message: 'Usuario actualizado exitosamente', statusCode: 200, error: '' };
+
   }
 
   remove(id: number) {
