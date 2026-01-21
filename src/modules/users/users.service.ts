@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import * as bcrypt from 'bcrypt';
+import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,7 @@ export class UsersService {
     private readonly userRepository: Repository<User>
   ) { }
 
-  async create(createUserDto: CreateUserDto, file: string) {
+  async create(createUserDto: CreateUserDto, file: string): Promise<GenericResponsesDto> {
 
     if (file) {
       createUserDto.avatar = file;
@@ -66,8 +67,7 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto, file: string) {
-
+  async update(id: number, updateUserDto: UpdateUserDto, file: string): Promise<GenericResponsesDto> {
 
     if (file) {
       updateUserDto.avatar = file;
