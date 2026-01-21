@@ -73,7 +73,8 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @ApiOkResponse({ description: 'Usuario eliminado exitosamente.', type: GenericResponsesDto })
+  remove(@Param('id', UserExistsPipe) id: string): Promise<GenericResponsesDto> {
     return this.usersService.remove(+id);
   }
 }

@@ -95,7 +95,12 @@ export class UsersService {
 
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number): Promise<GenericResponsesDto> {
+    const updateUser = await this.userRepository.update(id, ({ status: 0 }));
+
+    if (updateUser.affected === 0) throw new BadRequestException('Error al eliminar el usuario')
+
+    return { message: 'Usuario eliminado exitosamente', statusCode: 200, error: '' };
+
   }
 }
