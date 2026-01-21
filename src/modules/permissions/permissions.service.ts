@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePermissionDto } from './dto/requests/create-permission.dto';
 import { UpdatePermissionDto } from './dto/requests/update-permission.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Permission } from './entities/permission.entity';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationResponseMetaDto } from 'src/common/dto/pagination-response.dto';
@@ -48,6 +48,10 @@ export class PermissionsService {
 
   findOne(id: number) {
     return this.permissionRepository.findOneBy({ id });
+  }
+
+  findByIds(ids: number[]) {
+    return this.permissionRepository.findBy({ id: In(ids) });
   }
 
   findOneByName(name: string) {
