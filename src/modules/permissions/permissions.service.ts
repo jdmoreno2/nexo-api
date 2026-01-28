@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Permission } from './entities/permission.entity';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
-import { PaginationDto, PaginationResponseMetaDto } from 'src/common/dto/pagination-response.dto';
+import { PaginationDto, PaginationRequestMetaDto, PaginationResponseMetaDto } from 'src/common/dto/pagination-response.dto';
 
 @Injectable()
 export class PermissionsService {
@@ -24,13 +24,16 @@ export class PermissionsService {
 
   }
 
-  async findAll(meta: PaginationResponseMetaDto): Promise<PaginationDto<Permission>> {
+  async findAll(meta: PaginationRequestMetaDto): Promise<PaginationDto<Permission>> {
 
     const page = meta?.page || 1;
     const limit = meta?.limit || 10;
+    const orderBy = meta?.orderBy || 'id';
+    const order = meta?.order || 'DESC';
 
     const [permissions, total] = await this.permissionRepository.findAndCount({
-      order: { [meta.orderBy as string]: meta.order },
+      select: ['id', 'name', 'description', 'status'],
+      order: { [orderBy]: order },
       skip: (page - 1) * limit,
       take: limit,
     });
