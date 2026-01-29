@@ -3,12 +3,13 @@ import { PermissionsService } from './permissions.service';
 import { CreatePermissionDto } from './dto/requests/create-permission.dto';
 import { UpdatePermissionDto } from './dto/requests/update-permission.dto';
 import { PermissionExistsPipe } from './decorators/permission.validator';
-import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import { Permission } from './entities/permission.entity';
 import { ResponsePermissionDto } from './dto/responses/response-permission.dto';
 
+@ApiBearerAuth()
 @Controller('permissions')
 @ApiTags('Permissions')
 @ApiResponse(

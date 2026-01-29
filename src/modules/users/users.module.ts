@@ -18,6 +18,7 @@ import { emailExistsConstraint, UserAlreadyExistsConstraint } from './decorators
   imports: [
     SubscribersModule,
     TypeOrmModule.forFeature([User])
-  ]
+  ],
+  exports: [UsersService],
 })
 export class UsersModule { }

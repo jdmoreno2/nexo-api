@@ -10,7 +10,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SubscribersModule } from './modules/subscribers/subscribers.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { RolesModule } from './modules/roles/roles.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/guards/auth/auth.guard';
 
 @Module({
   imports: [
@@ -29,9 +32,16 @@ import { RolesModule } from './modules/roles/roles.module';
     SubscribersModule,
     PermissionsModule,
     UsersModule,
+    AuthModule,
     RolesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    }
+  ],
 })
 export class AppModule { }

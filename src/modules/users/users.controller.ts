@@ -3,13 +3,14 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
-import { ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilePipe } from 'src/common/decorators/file-pipe';
 import { UserExistsPipe } from './decorators/user.validator';
 import { User } from './entities/user.entity';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 
+@ApiBearerAuth()
 @Controller('users')
 @ApiTags('Users')
 @ApiResponse(
