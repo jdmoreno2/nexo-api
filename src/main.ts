@@ -4,6 +4,8 @@ import { useContainer } from 'class-validator';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as express from 'express';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,6 +21,8 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
   });
+
+  app.use('/public/', express.static(join(process.cwd(), 'public')));
 
   // Configuración Swagger
   if (configService.get('swagger.enabled')) {

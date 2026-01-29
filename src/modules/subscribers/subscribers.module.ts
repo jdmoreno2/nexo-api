@@ -3,7 +3,7 @@ import { SubscribersService } from './subscribers.service';
 import { SubscribersController } from './subscribers.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Subscriber } from './entities/subscriber.entity';
-import { subscriberAlreadyExistsConstraint, SubscriberExistsPipe } from './decorators/subscriber.validator';
+import { subscriberAlreadyExistsConstraint, SubscriberExistsConstraint, SubscriberExistsPipe } from './decorators/subscriber.validator';
 
 @Module({
   imports: [
@@ -13,8 +13,12 @@ import { subscriberAlreadyExistsConstraint, SubscriberExistsPipe } from './decor
   providers: [
     SubscribersService,
     subscriberAlreadyExistsConstraint,
-    SubscriberExistsPipe
+    SubscriberExistsPipe,
+    SubscriberExistsConstraint
   ],
-  exports: [SubscribersService, SubscriberExistsPipe],
+  exports: [
+    SubscribersService,
+    SubscriberExistsConstraint
+  ]
 })
 export class SubscribersModule { }
