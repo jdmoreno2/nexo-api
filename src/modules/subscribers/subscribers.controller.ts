@@ -2,12 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ValidationPip
 import { SubscribersService } from './subscribers.service';
 import { CreateSubscriberDto } from './dto/request/create-subscriber.dto';
 import { UpdateSubscriberDto } from './dto/request/update-subscriber.dto';
-import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SubscriberExistsPipe } from './decorators/subscriber.validator';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import { ResponseSubscriberDto } from './dto/responses/response-subscriber.dto';
 
+@ApiBearerAuth()
 @Controller('suscribers')
 @ApiTags('Suscriptores')
 @ApiResponse({

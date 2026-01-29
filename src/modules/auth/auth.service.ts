@@ -26,7 +26,7 @@ export class AuthService {
     // Se debe comprobar el role cuando se agregue
 
     const payload = {
-      sub: user.id,
+      sub: user.identifier,
       email: user.email,
     };
 

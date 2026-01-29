@@ -2,13 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/request/create-role.dto';
 import { UpdateRoleDto } from './dto/request/update-role.dto';
-import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import { ResponseListRoleDto } from './dto/response/response-role-list.dto';
 import { RoleExistsPipe } from './decorators/roles.validator';
 import { ResponseRoleDto } from './dto/response/response-role-dto';
 
+@ApiBearerAuth()
 @Controller('roles')
 @ApiTags('Roles')
 @ApiResponse({
