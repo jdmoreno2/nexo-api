@@ -1,4 +1,4 @@
-import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsIn, IsNumberString, IsOptional } from "class-validator";
 
 export class PaginationRequestMetaDto {
@@ -63,8 +63,14 @@ export class PaginationResponseMetaDto extends PartialType(PaginationRequestMeta
 }
 
 export class PaginationDto<T = any> {
-
+  @ApiProperty({
+    description: 'Lista de elementos paginados',
+    isArray: true,
+  })
   data: T[]
 
+  @ApiProperty({
+    description: 'Metadatos de la paginación',
+  })
   meta: PaginationResponseMetaDto
 }
