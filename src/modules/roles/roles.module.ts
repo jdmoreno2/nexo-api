@@ -7,7 +7,7 @@ import { PermissionsModule } from '../permissions/permissions.module';
 import { SubscribersModule } from '../subscribers/subscribers.module';
 import { SubscriberExistsConstraint } from '../subscribers/decorators/subscriber.validator';
 import { PermissionExistsConstraint } from '../permissions/decorators/permission.validator';
-import { RoleExistsPipe, RolesAlreadyExistsConstraint } from './decorators/roles.validator';
+import { RoleExistsConstraint, RoleExistsPipe, RolesAlreadyExistsConstraint } from './decorators/roles.validator';
 
 @Module({
   imports: [
@@ -19,10 +19,14 @@ import { RoleExistsPipe, RolesAlreadyExistsConstraint } from './decorators/roles
   providers: [
     RolesService,
     RolesAlreadyExistsConstraint,
+    RoleExistsConstraint,
     RoleExistsPipe,
     SubscriberExistsConstraint,
     PermissionExistsConstraint,
   ],
-  exports: [RolesService],
+  exports: [
+    RolesService,
+    RoleExistsConstraint
+  ],
 })
 export class RolesModule { }

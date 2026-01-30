@@ -1,5 +1,6 @@
 import { Permission } from "src/modules/permissions/entities/permission.entity";
 import { Subscriber } from "src/modules/subscribers/entities/subscriber.entity";
+import { UsersHasRoles } from "src/modules/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('roles')
@@ -31,6 +32,9 @@ export class Role {
 
   @OneToMany(() => RolesHasPermission, (rp) => rp.role)
   RolesHasPermissions: RolesHasPermission[];
+
+  @OneToMany(() => UsersHasRoles, (ru) => ru.role)
+  UsersHasRoles: UsersHasRoles[];
 }
 
 
@@ -55,7 +59,7 @@ export class RolesHasPermission {
   @JoinColumn({ name: 'permissions_id' })
   permission: Permission;
 
-  @ManyToOne(() => Role, (role) => role.RolesHasPermissions)
+  @ManyToOne(() => Role, (role) => role.id)
   @JoinColumn({ name: 'roles_id' })
   role: Role;
 

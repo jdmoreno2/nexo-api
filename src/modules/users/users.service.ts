@@ -2,8 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { User, UsersHasRoles } from './entities/user.entity';
+import { In, Repository } from 'typeorm';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import * as bcrypt from 'bcrypt';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
@@ -13,7 +13,9 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(UsersHasRoles)
+    private readonly userRolRepository: Repository<UsersHasRoles>,
   ) { }
 
   async create(createUserDto: CreateUserDto, file: string): Promise<GenericResponsesDto> {
@@ -28,6 +30,18 @@ export class UsersService {
 
     const newUser = await this.userRepository.save(createUserDto)
 
+    // console.log(createUserDto);
+
+
+    for (const role of createUserDto.roles_ids) {
+
+      const userRole = new UsersHasRoles()
+      userRole.users_id = newUser.id;
+      userRole.roles_id = Number(role);
+      await this.userRolRepository.save(userRole);
+
+    }
+
     if (newUser) return { message: 'Usuario creado exitosamente', statusCode: 201, error: '' };
     throw new BadRequestException('Error al crear al usuario')
 
@@ -39,6 +53,28 @@ export class UsersService {
     const limit = meta?.limit || 10;
 
     const [users, total] = await this.userRepository.findAndCount({
+      relations: {
+        usersHasRoles: {
+          role: true
+        }
+      },
+      select: {
+        id: true,
+        identifier: true,
+        name: true,
+        lastname: true,
+        email: true,
+        avatar_url: true,
+        status: true,
+        created_at: true,
+        usersHasRoles: {
+          roles_id: true,
+          role: {
+            id: true,
+            name: true
+          }
+        }
+      },
       order: { [meta.orderBy as string]: meta.order },
       skip: (page - 1) * limit,
       take: limit,
@@ -86,6 +122,26 @@ export class UsersService {
     } else {
       delete updateUserDto.password;
     }
+
+    if (updateUserDto.roles_ids) {
+
+      const userRoles = await this.userRolRepository.findBy({ users_id: id });
+      const userRoleIds = userRoles.map(ur => ur.roles_id);
+
+      const rolesToAdd = updateUserDto.roles_ids.filter(rid => !userRoleIds.includes(rid));
+      const rolesToRemove = userRoleIds.filter(rid => !updateUserDto.roles_ids!.includes(rid));
+      const activeRoles = userRoleIds.filter(rid => updateUserDto.roles_ids!.includes(rid));
+
+      // Inactivamos los permisos a eliminar
+      await this.userRolRepository.update({ users_id: id, roles_id: In(rolesToRemove) }, { status: 0 });
+      // Actualizamos los que posiblemente estaban inactivos los permisos nuevos
+      await this.userRolRepository.update({ users_id: id, roles_id: In(activeRoles) }, { status: 1 });
+
+      await this.userRolRepository.save(rolesToAdd.map(r => ({ users_id: id, roles_id: r })));
+
+    }
+
+    delete updateUserDto.roles_ids;
 
     const updatedUser = await this.userRepository.update(id, updateUserDto)
 

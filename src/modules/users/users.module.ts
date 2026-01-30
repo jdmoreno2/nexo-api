@@ -3,9 +3,10 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { SubscribersModule } from '../subscribers/subscribers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User, UsersHasRoles } from './entities/user.entity';
 import { SubscriberExistsConstraint } from '../subscribers/decorators/subscriber.validator';
 import { emailExistsConstraint, UserAlreadyExistsConstraint } from './decorators/user.validator';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
   controllers: [UsersController],
@@ -17,7 +18,8 @@ import { emailExistsConstraint, UserAlreadyExistsConstraint } from './decorators
   ],
   imports: [
     SubscribersModule,
-    TypeOrmModule.forFeature([User])
+    RolesModule,
+    TypeOrmModule.forFeature([User, UsersHasRoles])
   ],
   exports: [UsersService],
 })
