@@ -1,4 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
+import { IsNumber, IsOptional, Validate } from "class-validator"
+import { ResponseListRoleDto } from "src/modules/roles/dto/response/response-role-list.dto"
 
 export class ResponseUserDto {
     @ApiProperty({ description: 'ID del usuario', example: 1 })
@@ -27,4 +29,22 @@ export class ResponseUserDto {
 
     @ApiProperty({ description: 'ID del suscriptor asociado', example: 1, nullable: false })
     suscriber_id?: number
+
+    @ApiProperty({ description: 'Roles asignados al usuario', type: [Object], nullable: true })
+    roles?: UserRolesDto[];
+
+    @ApiProperty({
+        description: 'IDs de los roles asociados al usuario',
+        example: [1, 2, 3]
+    })
+    roles_ids: number[];
+
+}
+
+class UserRolesDto {
+    @ApiProperty({ description: 'ID del rol', example: 1 })
+    id: number
+
+    @ApiProperty({ description: 'Nombre del rol', example: 'Admin' })
+    name: string
 }

@@ -80,6 +80,10 @@ export class RolesService {
     return roleWithPermissions;
   }
 
+  findByIds(ids: number[]) {
+    return this.rolesRepository.findBy({ id: In(ids) });
+  }
+
   findOneByName(name: string) {
     return this.rolesRepository.findOneBy({ name });
   }

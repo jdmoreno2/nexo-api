@@ -2,6 +2,8 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsBase64, IsEmail, IsNumber, IsNumberString, IsOptional, IsString, Validate } from "class-validator";
 import { SubscriberExistsConstraint } from "src/modules/subscribers/decorators/subscriber.validator";
 import { emailExistsConstraint, UserAlreadyExistsConstraint } from "../../decorators/user.validator";
+import { RoleExistsConstraint } from "src/modules/roles/decorators/roles.validator";
+import { Transform } from "class-transformer";
 
 export class CreateUserDto {
 
@@ -10,7 +12,7 @@ export class CreateUserDto {
         example: 12345678
     })
     @IsNumberString({}, { message: 'Formato de datos invalido: identification debe ser un número entero.' })
-    @Validate(UserAlreadyExistsConstraint)
+    @Validate(UserAlreadyExistsConstraint, [{ isUpdate: false }])
     identifier: number
 
     @ApiProperty({
@@ -39,7 +41,7 @@ export class CreateUserDto {
         example: 'correo@email.com'
     })
     @IsEmail({}, { message: 'Formato de datos invalido: email debe ser una direccion de correo valida.' })
-    @Validate(emailExistsConstraint)
+    @Validate(emailExistsConstraint, [{ isUpdate: false }])
     email: string;
 
     @ApiProperty({
@@ -64,5 +66,19 @@ export class CreateUserDto {
     @IsNumberString({}, { message: 'Formato de Datos invalido: subscriber_id debe ser un numero.' })
     @Validate(SubscriberExistsConstraint)
     subscribers_id: number;
+
+    @ApiProperty({
+        description: 'IDs de los roles asociados al usuario',
+        example: [1, 2, 3]
+    })
+    @IsNumber({}, { each: true, message: 'Formato de Datos invalido: roles_ids debe ser un arreglo de numeros enteros.' })
+    @Transform(({ value }) => {
+        if (typeof value === 'string') {
+            return value.split(',').map((id: string) => parseInt(id, 10));
+        }
+        return [value];
+    })
+    @Validate(RoleExistsConstraint)
+    roles_ids: number[];
 
 }

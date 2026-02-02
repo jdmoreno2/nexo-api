@@ -15,9 +15,9 @@ export class AuthGuard implements CanActivate {
     private readonly userService: UsersService,
   ) { }
 
-  canActivate(
+  async canActivate(
     context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  ): Promise<boolean> {
 
     const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
       context.getHandler(),
@@ -33,8 +33,10 @@ export class AuthGuard implements CanActivate {
 
     try {
       const secret = this.configService.get<string>('JWT_SECRET');
+
       const payload = this.jtwService.verify(token, { secret });
-      request['user'] = this.userService.findOneByIdentifier(payload.sub);
+
+      request['user'] = await this.userService.findOneByIdentifier(payload.sub);
 
       if (!request['user']) throw new UnauthorizedException('Usuario no encontrado');
 

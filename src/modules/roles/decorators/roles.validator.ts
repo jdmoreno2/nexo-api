@@ -6,6 +6,9 @@ import {
 } from 'class-validator';
 import { RolesService } from '../roles.service';
 
+// WeakMap para almacenar IDs faltantes sin contaminar el objeto DTO
+const missingIdsStorage = new WeakMap<object, Map<string, number[]>>();
+
 @ValidatorConstraint({ name: 'rolesAlreadyExists', async: true })
 @Injectable()
 export class RolesAlreadyExistsConstraint implements ValidatorConstraintInterface {
@@ -30,13 +33,32 @@ export class RolesAlreadyExistsConstraint implements ValidatorConstraintInterfac
 export class RoleExistsConstraint implements ValidatorConstraintInterface {
   constructor(protected readonly rolesService: RolesService) { }
 
-  async validate(id: number) {
-    const role = await this.rolesService.findOne(id)
-    return !!role;
+  async validate(value: number | number[], args: ValidationArguments) {
+    const idsToCheck = Array.isArray(value) ? value : [value];
+    if (!idsToCheck?.length) return true;
+
+    const roles = await this.rolesService.findByIds(idsToCheck);
+    const foundIdsSet = new Set(roles.map(p => p.id));
+    const missingIds = idsToCheck.filter(id => !foundIdsSet.has(id));
+
+    // Guardar en WeakMap en lugar de en el objeto
+    if (missingIds.length > 0) {
+      if (!missingIdsStorage.has(args.object)) {
+        missingIdsStorage.set(args.object, new Map());
+      }
+      missingIdsStorage.get(args.object)!.set(args.property, missingIds);
+    }
+
+    return missingIds.length === 0;
+
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return `Rol con id: ${validationArguments.value} no encontrado.`;
+    const propertyMap = missingIdsStorage.get(validationArguments.object);
+    const missingIds = propertyMap?.get(validationArguments.property) || [];
+    const count = missingIds.length;
+    const text = count === 1 ? 'Role con id' : 'Roles con ids';
+    return `${text}: ${missingIds.join(', ')} no encontrado(s).`;
   }
 }
 
