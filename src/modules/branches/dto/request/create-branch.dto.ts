@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsInt, IsNotEmpty, IsOptional, IsString, Validate } from "class-validator";
 import { ClientExistsConstraint } from "src/modules/clients/decorators/clients.validator";
-import { BranchAlreadyExistsConstraint } from "../../decorators/clients.validator";
+import { BranchAlreadyExistsConstraint } from "../../decorators/branches.validator";
 
 export class CreateBranchDto {
   @ApiProperty({
