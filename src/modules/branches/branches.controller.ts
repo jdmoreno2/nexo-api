@@ -5,7 +5,7 @@ import { UpdateBranchDto } from './dto/request/update-branch.dto';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
-import { BranchExistsPipe } from './decorators/clients.validator';
+import { BranchExistsPipe } from './decorators/branches.validator';
 import { ResponseBranchtDto } from './dto/response/response-branch.dto';
 
 @ApiBearerAuth()

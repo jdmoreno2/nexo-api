@@ -5,7 +5,7 @@ import { ClientsModule } from '../clients/clients.module';
 import { ClientExistsConstraint } from '../clients/decorators/clients.validator';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Branch } from './entities/branch.entity';
-import { BranchAlreadyExistsConstraint, BranchExistsConstraint, BranchExistsPipe } from './decorators/clients.validator';
+import { BranchAlreadyExistsConstraint, BranchExistsConstraint, BranchExistsPipe } from './decorators/branches.validator';
 
 @Module({
   imports: [
