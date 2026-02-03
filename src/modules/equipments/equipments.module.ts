@@ -4,9 +4,11 @@ import { EquipmentsController } from './equipments.controller';
 import { BranchesModule } from '../branches/branches.module';
 import { BranchExistsConstraint } from '../branches/decorators/branches.validator';
 import { EquipmentAlreadyExistsConstraint, EquipmentExistsConstraint, EquipmentExistsPipe } from './decorators/equipments.validator';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Equipment } from './entities/equipment.entity';
 
 @Module({
-  imports: [BranchesModule],
+  imports: [TypeOrmModule.forFeature([Equipment]), BranchesModule],
   controllers: [EquipmentsController],
   providers: [
     EquipmentsService,

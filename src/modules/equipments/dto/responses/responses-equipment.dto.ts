@@ -1,5 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
+
+class EquipmentBranchDto {
+  @ApiProperty({ description: 'ID de la sucursal', example: 1 })
+  id: number
+
+  @ApiProperty({ description: 'Nombre de la sucursal', example: 'Sucursal 1' })
+  name: string
+}
+
 export class ResponseEquipmentDto {
   @ApiProperty({ description: 'ID del equipo', example: 1 })
   id: number
@@ -39,12 +48,4 @@ export class ResponseEquipmentDto {
 
   @ApiProperty({ description: 'Sucursal del equipo', type: [Object], nullable: true })
   branch?: EquipmentBranchDto;
-}
-
-class EquipmentBranchDto {
-  @ApiProperty({ description: 'ID de la sucursal', example: 1 })
-  id: number
-
-  @ApiProperty({ description: 'Nombre de la sucursal', example: 'Sucursal 1' })
-  name: string
 }
