@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { IdentificationTypeService } from './identification_type.service';
 import { CreateIdentificationTypeDto } from './dto/request/create-identification_type.dto';
 import { UpdateIdentificationTypeDto } from './dto/request/update-identification_type.dto';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
-import { PaginationDto } from 'src/common/dto/pagination-response.dto';
+import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import { ResponseIdentificationTypeDto } from './dto/response/response-identification-type.dto';
+import { IdentificationTypeExistsPipe } from './decorators/identification-type.validator';
 
 @ApiTags('Identification Type')
 @ApiResponse(
@@ -50,8 +51,8 @@ export class IdentificationTypeController {
     description: 'Permite obtener una lista paginada de todos los tipos de indentificaciones registrados en el sistema.'
   })
   @ApiOkResponse({ description: 'Lista paginada de tipos de indentificaciones', type: PaginationDto<ResponseIdentificationTypeDto> })
-  findAll() {
-    return this.identificationTypeService.findAll();
+  findAll(@Query() meta: PaginationRequestMetaDto) {
+    return this.identificationTypeService.findAll(meta);
   }
 
   @Get(':id')
@@ -60,7 +61,7 @@ export class IdentificationTypeController {
     description: 'Permite obtener la información de un tipo de indentificacion existente utilizando su ID.'
   })
   @ApiOkResponse({ description: 'Tipo de indentificacion obtenido exitosamente', type: ResponseIdentificationTypeDto })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', IdentificationTypeExistsPipe) id: string) {
     return this.identificationTypeService.findOne(+id);
   }
 
@@ -70,7 +71,7 @@ export class IdentificationTypeController {
     description: 'Permite actualizar la información de un tipo de indentificacion existente utilizando su ID.'
   })
   @ApiOkResponse({ description: 'Tipo de indentificacion actualizado exitosamente', type: GenericResponsesDto })
-  update(@Param('id') id: string, @Body() updateIdentificationTypeDto: UpdateIdentificationTypeDto) {
+  update(@Param('id', IdentificationTypeExistsPipe) id: string, @Body() updateIdentificationTypeDto: UpdateIdentificationTypeDto) {
     return this.identificationTypeService.update(+id, updateIdentificationTypeDto);
   }
 
@@ -80,7 +81,7 @@ export class IdentificationTypeController {
     description: 'Permite eliminar la información de un tipo de indentificacion existente utilizando su ID.'
   })
   @ApiOkResponse({ description: 'Tipo de indentificacion eliminado exitosamente', type: GenericResponsesDto })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', IdentificationTypeExistsPipe) id: string) {
     return this.identificationTypeService.remove(+id);
   }
 }

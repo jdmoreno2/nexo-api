@@ -8,7 +8,7 @@ export class ResponseIdentificationTypeDto {
   name: string
 
   @ApiProperty({ description: 'Descripción del tipo de identificacion', example: 'Numero de Cedula' })
-  description: string
+  description?: string
 
   @ApiProperty({ description: 'Estado del tipo de identificacion', example: 1 })
   status: number
