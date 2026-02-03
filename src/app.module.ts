@@ -18,6 +18,7 @@ import { ClientsModule } from './modules/clients/clients.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { IdentificationTypeModule } from './modules/identification_type/identification_type.module';
 import { LoggingMiddleware } from './common/middlewares/logging.middleware';
+import { EquipmentsModule } from './modules/equipments/equipments.module';
 
 
 @Module({
@@ -42,6 +43,7 @@ import { LoggingMiddleware } from './common/middlewares/logging.middleware';
     ClientsModule,
     BranchesModule,
     IdentificationTypeModule,
+    EquipmentsModule,
   ],
   controllers: [AppController],
   providers: [
