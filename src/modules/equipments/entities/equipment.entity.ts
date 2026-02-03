@@ -6,9 +6,6 @@ export class Equipment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: false })
-  name: string;
-
   @Column({ nullable: true })
   description: string;
 

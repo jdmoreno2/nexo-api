@@ -1,14 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class CreateEquipmentDto {
+export class ResponseEquipmentDto {
   @ApiProperty({ description: 'ID del equipo', example: 1 })
   id: number
-
-  @ApiProperty({
-    description: 'Nombre del equipo',
-    example: 'X8'
-  })
-  name: string;
 
   @ApiPropertyOptional({
     description: 'Descripción del equipo',
@@ -34,6 +28,23 @@ export class CreateEquipmentDto {
   })
   model?: string;
 
+  @ApiProperty({
+    description: 'ID de la sucursal a la que pertenece el rol',
+    example: 1
+  })
+  branches_id: number;
+
   @ApiProperty({ description: 'Estado del equipo', example: 1, required: false })
   status: number
+
+  @ApiProperty({ description: 'Sucursal del equipo', type: [Object], nullable: true })
+  branch?: EquipmentBranchDto;
+}
+
+class EquipmentBranchDto {
+  @ApiProperty({ description: 'ID de la sucursal', example: 1 })
+  id: number
+
+  @ApiProperty({ description: 'Nombre de la sucursal', example: 'Sucursal 1' })
+  name: string
 }

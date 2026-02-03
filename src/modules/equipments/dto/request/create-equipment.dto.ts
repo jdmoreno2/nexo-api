@@ -4,14 +4,6 @@ import { EquipmentAlreadyExistsConstraint } from "../../decorators/equipments.va
 import { BranchExistsConstraint } from "src/modules/branches/decorators/branches.validator";
 
 export class CreateEquipmentDto {
-  @ApiProperty({
-    description: 'Nombre del equipo',
-    example: 'X8'
-  })
-  @IsString({ message: 'Formato de Datos invalido: name debe ser una cadena de texto.' })
-  @IsNotEmpty({ message: 'Faltan datos necesario: name.' })
-  name: string;
-
   @ApiPropertyOptional({
     description: 'Descripción del equipo',
     example: 'Automovil'
