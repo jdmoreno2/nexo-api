@@ -16,6 +16,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth/auth.guard';
 import { ClientsModule } from './modules/clients/clients.module';
 import { BranchesModule } from './modules/branches/branches.module';
+import { IdentificationTypeModule } from './modules/identification_type/identification_type.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { BranchesModule } from './modules/branches/branches.module';
     RolesModule,
     ClientsModule,
     BranchesModule,
+    IdentificationTypeModule,
   ],
   controllers: [AppController],
   providers: [
