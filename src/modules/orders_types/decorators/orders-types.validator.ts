@@ -12,10 +12,10 @@ export class OrdersTypesAlreadyExistsConstraint implements ValidatorConstraintIn
   constructor(protected readonly ordersTypesService: OrdersTypesService) { }
 
   async validate(name: string, args: ValidationArguments) {
-    const identificationTypeId = (args.object as any).id;
+    const ordersTypeId = (args.object as any).id;
     const identificationType = await this.ordersTypesService.findOneByName(name);
     if (!identificationType) return true;
-    if (identificationType) return identificationTypeId === identificationType.id;
+    if (identificationType) return ordersTypeId === identificationType.id;
     return false;
   }
 
@@ -26,12 +26,12 @@ export class OrdersTypesAlreadyExistsConstraint implements ValidatorConstraintIn
 
 @ValidatorConstraint({ name: 'ordersTypesExists', async: true })
 @Injectable()
-export class IdentificationTypeExistsConstraint implements ValidatorConstraintInterface {
+export class OrdersTypesExistsConstraint implements ValidatorConstraintInterface {
   constructor(protected readonly ordersTypesService: OrdersTypesService) { }
 
   async validate(id: number) {
-    const identificationType = await this.ordersTypesService.findOne(id)
-    return !!identificationType;
+    const ordersType = await this.ordersTypesService.findOne(id)
+    return !!ordersType;
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
@@ -44,8 +44,8 @@ export class OrdersTypesExistsPipe implements PipeTransform {
   constructor(private readonly ordersTypesService: OrdersTypesService) { }
 
   async transform(id: number) {
-    const identificationType = await this.ordersTypesService.findOne(id);
-    if (!identificationType) {
+    const ordersType = await this.ordersTypesService.findOne(id);
+    if (!ordersType) {
       throw new NotFoundException(`Tipo de orden con id: ${id} no encontrada.`);
     }
     return id;

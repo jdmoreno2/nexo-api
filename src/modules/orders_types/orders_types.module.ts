@@ -4,7 +4,7 @@ import { OrdersTypesController } from './orders_types.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrdersType } from './entities/orders_type.entity';
 import { SubscribersModule } from '../subscribers/subscribers.module';
-import { IdentificationTypeExistsConstraint, OrdersTypesAlreadyExistsConstraint, OrdersTypesExistsPipe } from './decorators/orders-types.validator';
+import { OrdersTypesExistsConstraint, OrdersTypesAlreadyExistsConstraint, OrdersTypesExistsPipe } from './decorators/orders-types.validator';
 import { SubscriberExistsConstraint } from '../subscribers/decorators/subscriber.validator';
 
 @Module({
@@ -13,13 +13,13 @@ import { SubscriberExistsConstraint } from '../subscribers/decorators/subscriber
   providers: [
     OrdersTypesService,
     OrdersTypesAlreadyExistsConstraint,
-    IdentificationTypeExistsConstraint,
+    OrdersTypesExistsConstraint,
     OrdersTypesExistsPipe,
     SubscriberExistsConstraint
   ],
   exports: [
     OrdersTypesService,
-    IdentificationTypeExistsConstraint
+    OrdersTypesExistsConstraint
   ],
 })
 export class OrdersTypesModule { }
