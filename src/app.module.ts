@@ -19,6 +19,7 @@ import { BranchesModule } from './modules/branches/branches.module';
 import { IdentificationTypeModule } from './modules/identification_type/identification_type.module';
 import { LoggingMiddleware } from './common/middlewares/logging.middleware';
 import { EquipmentsModule } from './modules/equipments/equipments.module';
+import { OrdersTypesModule } from './modules/orders_types/orders_types.module';
 
 
 @Module({
@@ -44,6 +45,7 @@ import { EquipmentsModule } from './modules/equipments/equipments.module';
     BranchesModule,
     IdentificationTypeModule,
     EquipmentsModule,
+    OrdersTypesModule,
   ],
   controllers: [AppController],
   providers: [
