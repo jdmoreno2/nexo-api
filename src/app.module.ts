@@ -20,6 +20,7 @@ import { IdentificationTypeModule } from './modules/identification_type/identifi
 import { LoggingMiddleware } from './common/middlewares/logging.middleware';
 import { EquipmentsModule } from './modules/equipments/equipments.module';
 import { OrdersTypesModule } from './modules/orders_types/orders_types.module';
+import { OrdersModule } from './modules/orders/orders.module';
 
 
 @Module({
@@ -46,6 +47,7 @@ import { OrdersTypesModule } from './modules/orders_types/orders_types.module';
     IdentificationTypeModule,
     EquipmentsModule,
     OrdersTypesModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [
