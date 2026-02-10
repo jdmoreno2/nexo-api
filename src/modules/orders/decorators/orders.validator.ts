@@ -6,24 +6,6 @@ import {
 } from 'class-validator';
 import { OrdersService } from '../orders.service';
 
-@ValidatorConstraint({ name: 'orderAlreadyExist', async: true })
-@Injectable()
-export class OrdersAlreadyExistsConstraint implements ValidatorConstraintInterface {
-  constructor(protected readonly ordersService: OrdersService) { }
-
-  async validate(name: string, args: ValidationArguments) {
-    const orderId = (args.object as any).id;
-    const order = await this.ordersService.findOneByName(name);
-    if (!order) return true;
-    if (order) return orderId === order.id;
-    return false;
-  }
-
-  defaultMessage(args: ValidationArguments) {
-    return `La orden ${args.value} ya está registrada.`;
-  }
-}
-
 @ValidatorConstraint({ name: 'ordersExists', async: true })
 @Injectable()
 export class OrderExistsConstraint implements ValidatorConstraintInterface {

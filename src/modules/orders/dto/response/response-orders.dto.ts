@@ -1,14 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger"
 
+class BranchDto {
+  @ApiProperty({ description: 'Nombre de la sucursal', example: 'Sucursal 1' })
+  name: string
+}
+
+class OrdersTypeDto {
+  @ApiProperty({ description: 'Nombre de la sucursal', example: 'Sucursal 1' })
+  name: string
+}
+
 export class ResponseOrdersDto {
   @ApiProperty({ description: 'ID del tipo de orden', example: 1 })
   id: number
 
-  @ApiProperty({ description: 'Sucursal', example: 'Las Americas' })
-  branch?: string
-
-  @ApiProperty({ description: 'Tipo de orden', example: 'Orden de servicio' })
-  orders_type?: string
 
   @ApiProperty({ description: 'Estado del tipo de orden', example: 1 })
   status: number
@@ -27,4 +32,10 @@ export class ResponseOrdersDto {
     example: 1
   })
   orders_types_id: number;
+
+  @ApiProperty({ description: 'Sucursal', type: [Object], nullable: true })
+  branch?: BranchDto;
+
+  @ApiProperty({ description: 'Tipo de orden', type: [Object], nullable: true })
+  orders_type?: OrdersTypeDto;
 }

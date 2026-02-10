@@ -2,7 +2,7 @@ import { Branch } from "src/modules/branches/entities/branch.entity"
 import { OrdersType } from "src/modules/orders_types/entities/orders_type.entity"
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 
-@Entity('orders_types')
+@Entity('orders')
 export class Order {
   @PrimaryGeneratedColumn()
   id: number
