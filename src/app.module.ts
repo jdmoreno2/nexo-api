@@ -22,6 +22,7 @@ import { EquipmentsModule } from './modules/equipments/equipments.module';
 import { OrdersTypesModule } from './modules/orders_types/orders_types.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { FormsModule } from './modules/forms/forms.module';
+import { QuestionsTypesModule } from './modules/questions_types/questions_types.module';
 
 
 @Module({
@@ -50,6 +51,7 @@ import { FormsModule } from './modules/forms/forms.module';
     OrdersTypesModule,
     OrdersModule,
     FormsModule,
+    QuestionsTypesModule,
   ],
   controllers: [AppController],
   providers: [
