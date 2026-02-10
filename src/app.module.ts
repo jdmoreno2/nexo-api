@@ -23,6 +23,7 @@ import { OrdersTypesModule } from './modules/orders_types/orders_types.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { FormsModule } from './modules/forms/forms.module';
 import { QuestionsTypesModule } from './modules/questions_types/questions_types.module';
+import { QuestionsModule } from './modules/questions/questions.module';
 
 
 @Module({
@@ -52,6 +53,7 @@ import { QuestionsTypesModule } from './modules/questions_types/questions_types.
     OrdersModule,
     FormsModule,
     QuestionsTypesModule,
+    QuestionsModule,
   ],
   controllers: [AppController],
   providers: [
