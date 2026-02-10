@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { AuthDto } from './dto/request/auth.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -20,7 +20,7 @@ export class AuthService {
     const isActive = user && user.status == 1;
 
     if (!isValid || !isActive) {
-      throw new Error('Credenciales inválidas');
+      throw new BadRequestException('Credenciales inválidas');
     }
 
     // Se debe comprobar el role cuando se agregue
