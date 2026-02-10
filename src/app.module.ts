@@ -21,6 +21,7 @@ import { LoggingMiddleware } from './common/middlewares/logging.middleware';
 import { EquipmentsModule } from './modules/equipments/equipments.module';
 import { OrdersTypesModule } from './modules/orders_types/orders_types.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { FormsModule } from './modules/forms/forms.module';
 
 
 @Module({
@@ -37,10 +38,10 @@ import { OrdersModule } from './modules/orders/orders.module';
         ...configService.get('database'),
       }),
     }),
+    AuthModule,
     SubscribersModule,
     PermissionsModule,
     UsersModule,
-    AuthModule,
     RolesModule,
     ClientsModule,
     BranchesModule,
@@ -48,6 +49,7 @@ import { OrdersModule } from './modules/orders/orders.module';
     EquipmentsModule,
     OrdersTypesModule,
     OrdersModule,
+    FormsModule,
   ],
   controllers: [AppController],
   providers: [
