@@ -46,5 +46,5 @@ export class CreateQuestionDto {
   @IsNotEmpty({ message: 'Faltan datos necesario: questios_types_id.' })
   @IsInt({ message: 'Formato de Datos invalido: questios_types_id debe ser un numero entero.' })
   @Validate(QuestionsTypesExistsConstraint)
-  questios_types_id: number;
+  questions_types_id: number;
 }
