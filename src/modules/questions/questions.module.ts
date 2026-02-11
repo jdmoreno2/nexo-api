@@ -23,6 +23,10 @@ import { QuestionsTypesExistsConstraint } from '../questions_types/decorators/qu
     FormExistsConstraint,
     QuestionsTypesExistsConstraint
   ],
-  exports: [QuestionsService, QuestionsExistsConstraint]
+  exports: [
+    QuestionsService,
+    QuestionsExistsConstraint,
+    QuestionsExistsPipe
+  ]
 })
 export class QuestionsModule { }
