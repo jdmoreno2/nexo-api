@@ -27,10 +27,10 @@ export class ResponseTaskListDto {
   description?: string;
 
   @ApiPropertyOptional({ description: 'Fecha de Inicio', example: '2026-01-05' })
-  start_date?: string;
+  start_date?: Date;
 
   @ApiPropertyOptional({ description: 'Fecha de Cierre', example: '2026-01-06' })
-  end_date?: string;
+  end_date?: Date;
 
   @ApiProperty({ description: 'Estado', example: 1 })
   status: number;

@@ -1,21 +1,7 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger"
+import { ResponseTaskListDto } from "./response-task-list.dto"
 
-export class ResponseTaskDto {
-  @ApiProperty({ description: 'ID', example: 1 })
-  id: number
-
-  @ApiProperty({ description: 'Descripción', example: 'Averiaen el equipo' })
-  description?: string
-
-  @ApiPropertyOptional({ description: 'Fecha de Inicio', example: '2026-01-05' })
-  start_date?: string
-
-  @ApiPropertyOptional({ description: 'Fecha de Cierre', example: '2026-01-06' })
-  end_date?: string
-
-  @ApiProperty({ description: 'Estado', example: 1 })
-  status: number
-
+export class ResponseTaskDto extends PartialType(ResponseTaskListDto) {
   @ApiProperty({
     description: 'ID de la orden de servicio',
     example: 1
@@ -33,5 +19,4 @@ export class ResponseTaskDto {
     example: 1
   })
   users_id: number;
-
 }
