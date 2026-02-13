@@ -25,6 +25,7 @@ import { FormsModule } from './modules/forms/forms.module';
 import { QuestionsTypesModule } from './modules/questions_types/questions_types.module';
 import { QuestionsModule } from './modules/questions/questions.module';
 import { ResponsesModule } from './modules/responses/responses.module';
+import { TasksModule } from './modules/tasks/tasks.module';
 
 
 @Module({
@@ -56,6 +57,7 @@ import { ResponsesModule } from './modules/responses/responses.module';
     QuestionsTypesModule,
     QuestionsModule,
     ResponsesModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [
