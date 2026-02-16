@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { AuthDto } from './dto/request/auth.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -13,15 +13,16 @@ export class AuthService {
   ) { }
 
   async singIn(auth: AuthDto) {
+
     const user = await this.usersService.findOneByEmail(auth.email);
 
     const isValid = user && (await bcrypt.compare(auth.password, user.password_hash));
 
     const isActive = user && user.status == 1;
 
-    if (!isValid || !isActive) {
-      throw new BadRequestException('Credenciales inválidas');
-    }
+    if (!isValid) throw new UnauthorizedException('Credenciales inválidas');
+
+    if (!isActive) throw new UnauthorizedException('Usuario inactivo');
 
     // Se debe comprobar el role cuando se agregue
 
@@ -38,7 +39,9 @@ export class AuthService {
         identifier: user.identifier,
         email: user.email,
         name: user.name,
+        last_name: user.lastname,
         avatar: user.avatar_url,
+        subscribers_id: user.subscribers_id,
       }
     };
   }
