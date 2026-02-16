@@ -14,6 +14,6 @@ export class AuthDto {
         description: 'Contraseña del usuario',
         example: 'testpassword',
     })
-    @IsNotEmpty({ message: 'Faltan campos necesarios: ' })
+    @IsNotEmpty({ message: 'Faltan campos necesarios: password' })
     password: string;
 }
