@@ -3,7 +3,7 @@ import { CreateOrderDto } from './dto/request/create-order.dto';
 import { UpdateOrderDto } from './dto/request/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Not, Repository } from 'typeorm';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { ResponseOrdersDto } from './dto/response/response-orders.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
@@ -39,8 +39,6 @@ export class OrdersService {
     if (!order) {
       throw new BadRequestException('Error al crear la orden')
     }
-    console.log(createOrderDto);
-
     const tasks: CreateTaskDto[] = createOrderDto?.tasks?.map(task => ({
       description: task.description,
       equipments_id: task.equipments_id,
@@ -64,6 +62,7 @@ export class OrdersService {
       },
       select: {
         id: true,
+        order_number: true,
         status: true,
         created_at: true,
         orders_types_id: true,
@@ -88,7 +87,7 @@ export class OrdersService {
         }
       ] : {},
       order: {
-        [meta.orderBy || 'id']: meta.order || 'ASC'
+        [meta.orderBy || 'id']: meta.order || 'DESC'
       },
       skip: skit,
       take: limit
@@ -109,7 +108,11 @@ export class OrdersService {
     return this.ordersRepository.findOne({
       relations: {
         ordersType: true,
-        branch: true
+        branch: true,
+        tasks: {
+          user: true,
+          equipment: true
+        }
       },
       select: {
         id: true,
@@ -122,15 +125,49 @@ export class OrdersService {
         },
         branch: {
           name: true
+        },
+        tasks: {
+          id: true,
+          description: true,
+          end_date: true,
+          start_date: true,
+          equipments_id: true,
+          users_id: true,
+          status: true,
+          user: {
+            name: true,
+            lastname: true,
+          },
+          equipment: {
+            serial: true,
+            brand: true,
+            model: true,
+            description: true
+          }
         }
       },
-      where: { id }
+      where: { id, tasks: { status: Not(0) } }
     });
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto): Promise<GenericResponsesDto> {
-    const updatedOrder = await this.ordersRepository.update(id, updateOrderDto);
+    const { tasks, ...orderData } = updateOrderDto;
+    const updatedOrder = await this.ordersRepository.update(id, orderData);
     if (updatedOrder.affected === 0) throw new BadRequestException('Error al actualizar la Orden');
+    const inactiveTasks = await this.tasksRepository.find({
+      where: {
+        orders_id: id,
+        id: Not(In(tasks.map(t => t.id).filter(id => id !== undefined)))
+      }
+    });
+    await Promise.all(inactiveTasks.map(task => this.tasksRepository.update(task.id, { status: 0 })));
+    await Promise.all(tasks.map(async task => {
+      if (task.id) {
+        await this.tasksRepository.update(task.id, task);
+      } else {
+        await this.tasksRepository.save({ ...task, orders_id: id });
+      }
+    }));
     return { message: 'Orden Actualizada', statusCode: 200, error: '' };
   }
 
