@@ -28,12 +28,12 @@ export class ClientsService {
     const skit = (page - 1) * limit;
 
     const [result, total] = await this.clientsRepository.findAndCount({
-      where: meta.search ? {
-        name: `LIKE '%${meta.search}%'`,
-        nit: `LIKE '%${meta.search}%'`,
-        phone: `LIKE '%${meta.search}%'`,
-        address: `LIKE '%${meta.search}%'`,
-      } : {},
+      where: meta.search ? [
+        { name: ILike(`%${meta.search}%`) },
+        { nit: ILike(`%${meta.search}%`) },
+        { phone: ILike(`%${meta.search}%`) },
+        { phone: ILike(`%${meta.search}%`) },
+      ] : {},
       order: {
         [meta.orderBy || 'id']: meta.order || 'ASC'
       },

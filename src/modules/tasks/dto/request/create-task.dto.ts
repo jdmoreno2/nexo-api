@@ -45,7 +45,7 @@ export class CreateTaskDto {
   @IsOptional()
   @IsInt({ message: 'Formato de Datos invalido: users_id debe ser un numero entero.' })
   @Validate(EquipmentExistsConstraint)
-  equipments_id: number;
+  equipments_id?: number;
 
   @ApiProperty({
     description: 'ID del usuario',

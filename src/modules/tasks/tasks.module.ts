@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TasksController } from './tasks.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,7 +13,7 @@ import { TasksExistsConstraint, TasksExistsPipe } from './decorators/task.valida
     TypeOrmModule.forFeature([Task]),
     UsersModule,
     EquipmentsModule,
-    OrdersModule
+    forwardRef(() => OrdersModule)
   ],
   controllers: [TasksController],
   providers: [TasksService, TasksExistsConstraint, TasksExistsPipe],
