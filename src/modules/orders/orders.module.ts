@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,12 +8,21 @@ import { BranchesModule } from '../branches/branches.module';
 import { OrdersTypesModule } from '../orders_types/orders_types.module';
 import { BranchExistsConstraint } from '../branches/decorators/branches.validator';
 import { OrdersTypesExistsConstraint } from '../orders_types/decorators/orders-types.validator';
+import { UsersModule } from '../users/users.module';
+import { EquipmentsModule } from '../equipments/equipments.module';
+import { EquipmentExistsConstraint } from '../equipments/decorators/equipments.validator';
+import { UserExistsConstraint } from '../users/decorators/user.validator';
+import { TasksModule } from '../tasks/tasks.module';
+import { Task } from '../tasks/entities/task.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order]),
+    TypeOrmModule.forFeature([Order, Task]),
     BranchesModule,
-    OrdersTypesModule
+    OrdersTypesModule,
+    UsersModule,
+    EquipmentsModule,
+    forwardRef(() => TasksModule)
   ],
   controllers: [OrdersController],
   providers: [
@@ -21,7 +30,9 @@ import { OrdersTypesExistsConstraint } from '../orders_types/decorators/orders-t
     OrderExistsConstraint,
     OrdersExistsPipe,
     BranchExistsConstraint,
-    OrdersTypesExistsConstraint
+    OrdersTypesExistsConstraint,
+    EquipmentExistsConstraint,
+    UserExistsConstraint
   ],
   exports: [OrdersService, OrderExistsConstraint]
 })

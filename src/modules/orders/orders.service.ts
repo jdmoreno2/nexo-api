@@ -7,12 +7,16 @@ import { ILike, Repository } from 'typeorm';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { ResponseOrdersDto } from './dto/response/response-orders.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
+import { Task } from '../tasks/entities/task.entity';
+import { CreateTaskDto } from '../tasks/dto/request/create-task.dto';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order)
-    private readonly ordersRepository: Repository<Order>
+    private readonly ordersRepository: Repository<Order>,
+    @InjectRepository(Task)
+    private readonly tasksRepository: Repository<Task>,
   ) { }
 
   async getOrderNumber(branches_id: number): Promise<number> {
@@ -31,10 +35,20 @@ export class OrdersService {
 
   async create(createOrderDto: CreateOrderDto): Promise<GenericResponsesDto> {
     const orderNumber = await this.getOrderNumber(createOrderDto.branches_id);
-    console.log({ orderNumber });
-    if (!await this.ordersRepository.save({ ...createOrderDto, order_number: orderNumber })) {
+    const order = await this.ordersRepository.save({ ...createOrderDto, order_number: orderNumber });
+    if (!order) {
       throw new BadRequestException('Error al crear la orden')
     }
+    console.log(createOrderDto);
+
+    const tasks: CreateTaskDto[] = createOrderDto?.tasks?.map(task => ({
+      description: task.description,
+      equipments_id: task.equipments_id,
+      users_id: task.users_id,
+      orders_id: order.id
+    }));
+    await this.tasksRepository.save(tasks);
+
     return { message: 'Orden Creada Exitosamente', statusCode: 201, error: '' };
   }
 
