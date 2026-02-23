@@ -1,6 +1,7 @@
 import { Branch } from "src/modules/branches/entities/branch.entity"
 import { OrdersType } from "src/modules/orders_types/entities/orders_type.entity"
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Task } from "src/modules/tasks/entities/task.entity"
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('orders')
 export class Order {
@@ -35,4 +36,7 @@ export class Order {
   @ManyToOne(() => OrdersType, (ordersType) => ordersType.id)
   @JoinColumn({ name: 'orders_types_id' })
   ordersType: OrdersType;
+
+  @OneToMany(() => Task, (task) => task.order)
+  tasks: Task[]
 }

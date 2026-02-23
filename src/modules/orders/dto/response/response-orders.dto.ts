@@ -14,6 +14,8 @@ export class ResponseOrdersDto {
   @ApiProperty({ description: 'ID del tipo de orden', example: 1 })
   id: number
 
+  @ApiProperty({ description: 'Número de orden', example: 'ORD-001' })
+  order_number: number
 
   @ApiProperty({ description: 'Estado del tipo de orden', example: 1 })
   status: number

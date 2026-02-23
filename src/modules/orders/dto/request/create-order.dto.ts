@@ -6,7 +6,7 @@ import { EquipmentExistsConstraint } from "src/modules/equipments/decorators/equ
 import { OrdersTypesExistsConstraint } from "src/modules/orders_types/decorators/orders-types.validator";
 import { UserExistsConstraint } from "src/modules/users/decorators/user.validator";
 
-class CreateOrderTaskItemDto {
+export class CreateOrderTaskItemDto {
   @ApiPropertyOptional({
     description: 'Descripción de la tarea.',
     example: 'Reparacion del equipo.',
