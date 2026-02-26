@@ -7,6 +7,7 @@ import { Equipment } from './entities/equipment.entity';
 import { ILike, Repository } from 'typeorm';
 import { ResponseEquipmentDto } from './dto/responses/responses-equipment.dto';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
+import { EquipmentPaginationRequestMetaDto } from './dto/responses/equipment-pagination-request.dto';
 
 @Injectable()
 export class EquipmentsService {
@@ -22,12 +23,45 @@ export class EquipmentsService {
     return { message: 'Equipo Creado Exitosamente', statusCode: 201, error: '' };
   }
 
-  async findAll(meta: PaginationRequestMetaDto): Promise<PaginationDto<ResponseEquipmentDto>> {
+  async findAll(meta: EquipmentPaginationRequestMetaDto): Promise<PaginationDto<ResponseEquipmentDto>> {
     const page = meta?.page || 1;
     const limit = meta?.limit || 10;
     const skit = (page - 1) * limit;
 
+    let where: any = {};
+
+    if (meta.search) {
+      where = [
+        { serial: ILike(`%${meta.search}%`) },
+        { description: ILike(`%${meta.search}%`) },
+        { model: ILike(`%${meta.search}%`) },
+        { brand: ILike(`%${meta.search}%`) },
+        { branch: { name: ILike(`%${meta.search}%`) } },
+      ]
+    }
+
+    if (meta.id) {
+      where = { id: meta.id };
+    }
+
+    if (meta.serial) {
+      where = { serial: ILike(`%${meta.serial}%`) };
+    }
+
+    if (meta.branchId) {
+      where = { branch: { id: meta.branchId } };
+    }
+
+    if (meta.brand) {
+      where = { brand: ILike(`%${meta.brand}%`) };
+    }
+
+    if (meta.model) {
+      where = { model: ILike(`%${meta.model}%`) };
+    }
+
     const [result, total] = await this.equipmentsRepository.findAndCount({
+      relations: { branch: true },
       select: {
         id: true,
         description: true,
@@ -36,13 +70,7 @@ export class EquipmentsService {
         brand: true,
         status: true,
       },
-      where: meta.search ? [
-        { serial: ILike(`%${meta.search}%`) },
-        { description: ILike(`%${meta.search}%`) },
-        { model: ILike(`%${meta.search}%`) },
-        { brand: ILike(`%${meta.search}%`) },
-        { branch: { name: ILike(`%${meta.search}%`) } },
-      ] : {},
+      where,
       order: {
         [meta.orderBy || 'id']: meta.order || 'ASC'
       },

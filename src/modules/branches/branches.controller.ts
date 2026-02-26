@@ -7,6 +7,7 @@ import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import { BranchExistsPipe } from './decorators/branches.validator';
 import { ResponseBranchtDto } from './dto/response/response-branch.dto';
+import { BranchPaginationRequestMetaDto } from './dto/request/branch-pagination-request.dto';
 
 @ApiBearerAuth()
 @ApiTags('Branches')
@@ -57,7 +58,7 @@ export class BranchesController {
     description: 'Lista paginada de clientes',
     type: PaginationDto<ResponseBranchtDto>
   })
-  findAll(@Query() meta: PaginationRequestMetaDto) {
+  findAll(@Query() meta: BranchPaginationRequestMetaDto) {
     return this.branchesService.findAll(meta);
   }
 
