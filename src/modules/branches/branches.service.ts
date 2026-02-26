@@ -7,6 +7,8 @@ import { ResponseClientDto } from '../clients/dto/response/response-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Branch } from './entities/branch.entity';
 import { ILike, Repository } from 'typeorm';
+import { ResponseBranchtDto } from './dto/response/response-branch.dto';
+import { BranchPaginationRequestMetaDto } from './dto/request/branch-pagination-request.dto';
 
 @Injectable()
 export class BranchesService {
@@ -22,10 +24,36 @@ export class BranchesService {
     return { message: 'Sucursal Creada Exitosamente', statusCode: 201, error: '' };
   }
 
-  async findAll(meta: PaginationRequestMetaDto): Promise<PaginationDto<ResponseClientDto>> {
+  async findAll(meta: BranchPaginationRequestMetaDto): Promise<PaginationDto<ResponseBranchtDto>> {
     const page = meta?.page || 1;
     const limit = meta?.limit || 10;
     const skit = (page - 1) * limit;
+
+    let where: any = {};
+
+    // Búsqueda general
+    if (meta.search) {
+      where = [
+        { name: ILike(`%${meta.search}%`) },
+        { phone: ILike(`%${meta.search}%`) },
+        { address: ILike(`%${meta.search}%`) },
+        { client: { name: ILike(`%${meta.search}%`) } },
+        { client: { nit: ILike(`%${meta.search}%`) } }
+      ];
+    }
+
+    // Búsquedas específicas
+    if (meta.clientId) {
+      where = { client: { id: meta.clientId } };
+    }
+
+    if (meta.nit) {
+      where = { client: { nit: ILike(`%${meta.nit}%`) } };
+    }
+
+    if (meta.branchName) {
+      where = { name: ILike(`%${meta.branchName}%`) };
+    }
 
     const [result, total] = await this.branchesRepository.findAndCount({
       relations: { client: true },
@@ -40,13 +68,7 @@ export class BranchesService {
         },
         status: true,
       },
-      where: meta.search ? [
-        { name: ILike(`%${meta.search}%`) },
-        { phone: ILike(`%${meta.search}%`) },
-        { address: ILike(`%${meta.search}%`) },
-        { client: { name: ILike(`%${meta.search}%`) } },
-        { client: { nit: ILike(`%${meta.search}%`) } }
-      ] : {},
+      where,
       order: {
         [meta.orderBy || 'id']: meta.order || 'ASC'
       },

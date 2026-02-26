@@ -7,6 +7,7 @@ import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import { EquipmentExistsPipe } from './decorators/equipments.validator';
 import { ResponseEquipmentDto } from './dto/responses/responses-equipment.dto';
+import { EquipmentPaginationRequestMetaDto } from './dto/responses/equipment-pagination-request.dto';
 
 @ApiBearerAuth()
 @ApiTags('Equipments')
@@ -51,7 +52,7 @@ export class EquipmentsController {
     description: 'Permite obtener una lista paginada de todos los Equipos registrados en el sistema.'
   })
   @ApiOkResponse({ description: 'Lista paginada de Equipos', type: PaginationDto<ResponseEquipmentDto> })
-  findAll(@Query() meta: PaginationRequestMetaDto) {
+  findAll(@Query() meta: EquipmentPaginationRequestMetaDto) {
     return this.equipmentsService.findAll(meta);
   }
 

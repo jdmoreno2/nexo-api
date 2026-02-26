@@ -124,7 +124,8 @@ export class OrdersService {
           name: true
         },
         branch: {
-          name: true
+          name: true,
+          clients_id: true,
         },
         tasks: {
           id: true,
