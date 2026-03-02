@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsBase64, IsEmail, IsNumber, IsNumberString, IsOptional, IsString, Validate } from "class-validator";
+import { IsBase64, IsEmail, IsInt, IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString, Validate } from "class-validator";
 import { SubscriberExistsConstraint } from "src/modules/subscribers/decorators/subscriber.validator";
 import { emailExistsConstraint, UserAlreadyExistsConstraint } from "../../decorators/user.validator";
 import { RoleExistsConstraint } from "src/modules/roles/decorators/roles.validator";
-import { Transform } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { IdentificationTypeExistsConstraint } from "src/modules/identification_type/decorators/identification-type.validator";
 
 export class CreateUserDto {
@@ -12,7 +12,7 @@ export class CreateUserDto {
     description: 'Número de identificación del usuario',
     example: 12345678
   })
-  @IsNumberString({}, { message: 'Formato de datos invalido: identification debe ser un número entero.' })
+  @IsNumber({}, { message: 'Formato de datos invalido: identification debe ser un número entero.' })
   @Validate(UserAlreadyExistsConstraint, [{ isUpdate: false }])
   identifier: number
 
@@ -20,7 +20,7 @@ export class CreateUserDto {
     description: 'Tipo de identificación del usuario',
     example: 1
   })
-  @IsNumberString({}, { message: 'Formato de datos invalido: identification_types_id debe ser un número entero.' })
+  @IsNumber({}, { message: 'Formato de datos invalido: identification_types_id debe ser un número entero.' })
   @Validate(IdentificationTypeExistsConstraint)
   identification_types_id: number;
 
@@ -65,7 +65,7 @@ export class CreateUserDto {
     description: 'Id del suscriptor al que pertenece el usuario',
     example: 1
   })
-  @IsNumberString({}, { message: 'Formato de Datos invalido: subscriber_id debe ser un numero.' })
+  @IsNumber({}, { message: 'Formato de Datos invalido: subscribers_id debe ser un numero.' })
   @Validate(SubscriberExistsConstraint)
   subscribers_id: number;
 
@@ -76,7 +76,7 @@ export class CreateUserDto {
   @IsNumber({}, { each: true, message: 'Formato de Datos invalido: roles_ids debe ser un arreglo de numeros enteros.' })
   @Transform(({ value }) => {
     if (typeof value === 'string') {
-      return value.split(',').map((id: string) => parseInt(id, 10));
+      return JSON.parse(value);
     }
     return [value];
   })
