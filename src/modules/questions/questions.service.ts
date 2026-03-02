@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/request/create-question.dto';
 import { UpdateQuestionDto } from './dto/request/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,17 +7,34 @@ import { Question } from './entities/question.entity';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import { ResponseQuestionsTypesDto } from '../questions_types/dto/response/response-question-type.dto';
+import { ResponsesService } from '../responses/responses.service';
 
 @Injectable()
 export class QuestionsService {
   constructor(
     @InjectRepository(Question)
-    private readonly questionsRepository: Repository<Question>
+    private readonly questionsRepository: Repository<Question>,
+    @Inject(forwardRef(() => ResponsesService))
+    private responsesService: ResponsesService,
   ) { }
 
   async create(createQuestionDto: CreateQuestionDto): Promise<GenericResponsesDto> {
-    if (!await this.questionsRepository.save(createQuestionDto)) {
+    const { responses, ...rest } = createQuestionDto;
+    const savedQuestion = await this.questionsRepository.save({ ...rest })
+    if (!savedQuestion) {
       throw new BadRequestException('Error al crear la Pregunta')
+    }
+    if (responses) {
+      const errors: string[] = [];
+      for (const response of responses) {
+        try {
+          await this.responsesService.create({ value: response, questions_id: savedQuestion.id })
+        } catch (error) {
+          errors.push(`Error al registrar la respuesta: ${response}.`)
+          console.log(`Error al registrar la respuesta: ${response}.`);
+        }
+      }
+      if (errors.length) throw new BadRequestException('Error al crear la Pregunta');
     }
     return { message: 'Pregunta Creado Exitosamente', statusCode: 201, error: '' };
   }

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsInt, IsNotEmpty, IsOptional, IsString, Max, Min, Validate } from "class-validator";
+import { IsArray, IsInt, IsNotEmpty, IsOptional, IsString, Max, Min, Validate } from "class-validator";
 import { FormExistsConstraint } from "src/modules/forms/decorators/forms.validator";
 import { QuestionsTypesExistsConstraint } from "src/modules/questions_types/decorators/questions-types.validator";
 
@@ -47,4 +47,13 @@ export class CreateQuestionDto {
   @IsInt({ message: 'Formato de Datos invalido: questios_types_id debe ser un numero entero.' })
   @Validate(QuestionsTypesExistsConstraint)
   questions_types_id: number;
+
+  @ApiPropertyOptional({
+    description: 'Respuestas',
+    example: ['Respuesta 1', 'Respuesta 2']
+  })
+  @IsOptional()
+  @IsNotEmpty({ message: 'Faltan datos necesario: responses.' })
+  @IsArray({ message: 'responses debe ser un arreglo.' })
+  responses: string[]
 }
