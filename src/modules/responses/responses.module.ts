@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ResponsesService } from './responses.service';
 import { ResponsesController } from './responses.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,7 +8,10 @@ import { ResponsesExistsConstraint, ResponsesExistsPipe } from './decorators/res
 import { QuestionsExistsPipe } from '../questions/decorators/questios.validator';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Response]), QuestionsModule],
+  imports: [
+    TypeOrmModule.forFeature([Response]),
+    forwardRef(() => QuestionsModule)
+  ],
   controllers: [ResponsesController],
   providers: [
     ResponsesService,

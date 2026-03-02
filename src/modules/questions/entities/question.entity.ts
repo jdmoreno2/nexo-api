@@ -7,7 +7,7 @@ export class Question {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ nullable: false, unique: true })
+  @Column({ nullable: false })
   name: string
 
   @Column({ nullable: true })

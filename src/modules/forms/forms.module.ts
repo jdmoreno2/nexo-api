@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { FormsService } from './forms.service';
 import { FormsController } from './forms.controller';
 import { FormAlreadyExistsConstraint, FormExistsConstraint, FormExistsPipe } from './decorators/forms.validator';
@@ -6,16 +6,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SubscribersModule } from '../subscribers/subscribers.module';
 import { SubscriberExistsConstraint } from '../subscribers/decorators/subscriber.validator';
 import { Form } from './entities/form.entity';
+import { QuestionsModule } from '../questions/questions.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Form]), SubscribersModule],
+  imports: [
+    TypeOrmModule.forFeature([Form]),
+    SubscribersModule,
+    forwardRef(() => QuestionsModule)
+  ],
   controllers: [FormsController],
   providers: [
     FormsService,
     FormAlreadyExistsConstraint,
     FormExistsConstraint,
     FormExistsPipe,
-    SubscriberExistsConstraint
+    SubscriberExistsConstraint,
   ],
   exports: [FormsService, FormExistsConstraint],
 })
