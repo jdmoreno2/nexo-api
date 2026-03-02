@@ -14,6 +14,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     transform: true,
+    transformOptions: {
+      enableImplicitConversion: true, // Esto permite que '1' pase a 1 automáticamente
+    }
   }));
 
   app.enableCors({
