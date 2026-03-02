@@ -83,7 +83,33 @@ export class UsersService {
   }
 
   findOneByIdentifier(identifier: number) {
-    return this.userRepository.findOneBy({ identifier });
+    return this.userRepository.findOne({
+      where: { identifier },
+      relations: {
+        identificationType: true,
+        usersHasRoles: { role: true }
+      },
+      select: {
+        id: true,
+        identifier: true,
+        name: true,
+        lastname: true,
+        email: true,
+        avatar_url: true,
+        status: true,
+        identification_types_id: true,
+        usersHasRoles: {
+          roles_id: true,
+          role: {
+            id: true,
+            name: true
+          }
+        },
+        identificationType: {
+          name: true
+        },
+      },
+    });
   }
 
   findOneByEmail(email: string) {
