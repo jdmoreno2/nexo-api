@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateFormDto } from './dto/request/create-form.dto';
 import { UpdateFormDto } from './dto/request/update-form.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,18 +7,41 @@ import { ILike, Repository } from 'typeorm';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import { ResponseFormsDto } from './dto/response/response-forms.dto';
+import { CreateFormWithQuestionDto } from './dto/request/create-form-with-question.dto';
+import { QuestionsService } from '../questions/questions.service';
 
 @Injectable()
 export class FormsService {
   constructor(
     @InjectRepository(Form)
-    private readonly formsRepository: Repository<Form>
+    private readonly formsRepository: Repository<Form>,
+    @Inject(forwardRef(() => QuestionsService))
+    private questionsService: QuestionsService,
   ) { }
 
   async create(createFormDto: CreateFormDto): Promise<GenericResponsesDto> {
     if (!await this.formsRepository.save(createFormDto)) {
       throw new BadRequestException('Error al crear el formulario')
     }
+    return { message: 'Formulario Creado Exitosamente', statusCode: 201, error: '' };
+  }
+
+  async createFormWithQuestions(createFormWithQuestionDto: CreateFormWithQuestionDto): Promise<GenericResponsesDto> {
+    const { questions, ...rest } = createFormWithQuestionDto;
+    const savedForm = await this.formsRepository.save(rest)
+    if (!savedForm) {
+      throw new BadRequestException('Error al crear el formulario')
+    }
+    const errors: string[] = [];
+    for (const question of questions) {
+      try {
+        await this.questionsService.create({ ...question, forms_id: savedForm.id });
+      } catch (error) {
+        errors.push(`Error al registrar la pregunta: ${question.name}.`)
+        console.log(`Error al registrar la pregunta: ${question.name}.`);
+      }
+    }
+    if (errors.length) throw new BadRequestException('Error al crear el formulario');
     return { message: 'Formulario Creado Exitosamente', statusCode: 201, error: '' };
   }
 

@@ -7,6 +7,7 @@ import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import { ResponseFormsDto } from './dto/response/response-forms.dto';
 import { FormExistsPipe } from './decorators/forms.validator';
+import { CreateFormWithQuestionDto } from './dto/request/create-form-with-question.dto';
 
 @ApiTags('Forms')
 @ApiResponse(
@@ -43,6 +44,14 @@ export class FormsController {
   @ApiOkResponse({ description: 'Formulario creado exitosamente.', type: GenericResponsesDto })
   create(@Body() createFormDto: CreateFormDto) {
     return this.formsService.create(createFormDto);
+  }
+
+
+  @Post('formWithQuestions')
+  @ApiOperation({ summary: 'Crear Formulario con Preguntas', description: 'Crea un nuevo Formulario con sus Preguntas en el sistema.' })
+  @ApiOkResponse({ description: 'Formulario creado exitosamente.', type: GenericResponsesDto })
+  createFormWithQuestions(@Body() createFormWithQuestionDto: CreateFormWithQuestionDto) {
+    return this.formsService.createFormWithQuestions(createFormWithQuestionDto);
   }
 
   @Get()
