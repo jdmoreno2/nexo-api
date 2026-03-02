@@ -79,7 +79,7 @@ export class UsersController {
   @Get(':id')
   @ApiOkResponse({ description: 'Usuario consultado correctamente', type: PaginationDto<User> })
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOneByIdentifier(+id);
   }
 
   @ApiOperation({ summary: 'Actualizar usuario por id' })

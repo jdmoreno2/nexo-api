@@ -27,7 +27,7 @@ export class UserAlreadyExistsConstraint implements ValidatorConstraintInterface
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return `El usuario con id: ${validationArguments.value} ya está registrado.`;
+    return `El usuario con identificacion: ${validationArguments.value} ya está registrado.`;
   }
 
 }
@@ -63,9 +63,9 @@ export class UserExistsPipe implements PipeTransform {
   constructor(private readonly usersService: UsersService) { }
 
   async transform(id: number) {
-    const user = await this.usersService.findOne(id);
+    const user = await this.usersService.findOneByIdentifier(id);
     if (!user) {
-      throw new NotFoundException(`Usuario con id: ${id} no encontrado.`);
+      throw new NotFoundException(`Usuario con identificacion: ${id} no encontrado.`);
     }
     return id;
   }
@@ -78,11 +78,11 @@ export class UserExistsConstraint implements ValidatorConstraintInterface {
   constructor(protected readonly usersService: UsersService) { }
 
   async validate(id: number) {
-    const user = await this.usersService.findOne(id)
+    const user = await this.usersService.findOneByIdentifier(id)
     return !!user;
   }
 
   defaultMessage(validationArguments: ValidationArguments): string {
-    return `Usuario con id: ${validationArguments.value} no encontrado.`;
+    return `Usuario con identificacion: ${validationArguments.value} no encontrado.`;
   }
 }
