@@ -84,6 +84,31 @@ export class FormsService {
     return this.formsRepository.findOneBy({ id });
   }
 
+  async findOneWithQuestions(id: number): Promise<Form | null> {
+    return this.formsRepository.createQueryBuilder("form")
+      .leftJoinAndSelect(
+        "form.questions",
+        "question",
+        "question.status = :qStatus",
+        { qStatus: 1 }
+      )
+      .leftJoinAndSelect(
+        "question.responses",
+        "response",
+        "response.status = :rStatus",
+        { rStatus: 1 }
+      )
+      .leftJoinAndSelect("question.questionType", "questionType")
+      .select([
+        "form.id", "form.name", "form.description", "form.status", "form.subscribers_id",
+        "question.id", "question.name", "question.description", "question.status",
+        "question.questions_types_id", "questionType.name",
+        "response.id", "response.value", "response.status"
+      ])
+      .where("form.id = :id", { id })
+      .getOne();
+  }
+
   async findOneByName(name: string): Promise<Form | null> {
     return this.formsRepository.findOneBy({ name: ILike(name.toLowerCase()) });
   }
