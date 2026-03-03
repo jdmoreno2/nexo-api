@@ -8,6 +8,7 @@ import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/paginati
 import { ResponseFormsDto } from './dto/response/response-forms.dto';
 import { FormExistsPipe } from './decorators/forms.validator';
 import { CreateFormWithQuestionDto } from './dto/request/create-form-with-question.dto';
+import { ResponseFormWithQuestionsDto } from './dto/response/response-forms-questions.dto';
 
 @ApiTags('Forms')
 @ApiResponse(
@@ -72,6 +73,16 @@ export class FormsController {
   @ApiOkResponse({ description: 'Formulario obtenido exitosamente', type: ResponseFormsDto })
   findOne(@Param('id', FormExistsPipe) id: string) {
     return this.formsService.findOne(+id);
+  }
+
+  @Get(':id/withQuestions')
+  @ApiOperation({
+    summary: 'Endpoint para obtener un Formulario por ID con sus preguntas',
+    description: 'Permite obtener la información de un Formulario con sus preguntas existente utilizando su ID.'
+  })
+  @ApiOkResponse({ description: 'Formulario obtenido exitosamente', type: ResponseFormWithQuestionsDto })
+  findOneWithQuestions(@Param('id', FormExistsPipe) id: string) {
+    return this.formsService.findOneWithQuestions(+id);
   }
 
   @Patch(':id')

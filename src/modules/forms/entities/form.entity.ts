@@ -1,5 +1,6 @@
+import { Question } from "src/modules/questions/entities/question.entity"
 import { Subscriber } from "src/modules/subscribers/entities/subscriber.entity"
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('forms')
 export class Form {
@@ -27,4 +28,7 @@ export class Form {
   @ManyToOne(() => Subscriber, (subscriber) => subscriber.id)
   @JoinColumn({ name: 'subscribers_id' })
   subscriber: Subscriber;
+
+  @OneToMany(() => Question, (question) => question.form)
+  questions: Question[];
 }
