@@ -1,6 +1,7 @@
 import { Form } from "src/modules/forms/entities/form.entity"
 import { QuestionsType } from "src/modules/questions_types/entities/questions_type.entity"
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Response } from "src/modules/responses/entities/response.entity"
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('questions')
 export class Question {
@@ -38,4 +39,7 @@ export class Question {
   @ManyToOne(() => QuestionsType, (questionsType) => questionsType.id)
   @JoinColumn({ name: 'questions_types_id' })
   questionType: QuestionsType;
+
+  @OneToMany(() => Response, (response) => response.question)
+  responses: Response[];
 }
