@@ -83,7 +83,7 @@ export class QuestionsService {
     const { responses, ...rest } = updateQuestionDto;
     const updatedQuestion = await this.questionsRepository.update(id, rest);
     if (updatedQuestion.affected === 0) throw new BadRequestException('Error al actualizar la Pregunta');
-    const oldQuestion = await this.questionsRepository.findOne({ where: { id }, relations: { responses: true } });
+    const oldQuestion = await this.questionsRepository.findOne({ where: { id, responses: { status: 1 } }, relations: { responses: true } });
     let deletedResponses: Response[] = [];
     let newResponses: string[] = [];
     if (oldQuestion?.responses && responses) {
@@ -103,14 +103,14 @@ export class QuestionsService {
           console.log(`Error al registrar/actualizar la respuesta: ${response}.`);
         }
       }
-      if (deletedResponses.length) {
-        for (const response of deletedResponses) {
-          try {
-            await this.responsesService.remove(response.id)
-          } catch (error) {
-            errors.push(`Error al eliminar la respuesta: ${response}.`)
-            console.log(`Error al eliminar la respuesta: ${response}.`);
-          }
+    }
+    if (deletedResponses.length) {
+      for (const response of deletedResponses) {
+        try {
+          await this.responsesService.remove(response.id)
+        } catch (error) {
+          errors.push(`Error al eliminar la respuesta: ${response}.`)
+          console.log(`Error al eliminar la respuesta: ${response}.`);
         }
       }
     }
