@@ -8,6 +8,7 @@ import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import { ResponseQuestionsTypesDto } from '../questions_types/dto/response/response-question-type.dto';
 import { ResponsesService } from '../responses/responses.service';
+import { Response } from '../responses/entities/response.entity';
 
 @Injectable()
 export class QuestionsService {
@@ -79,8 +80,43 @@ export class QuestionsService {
   }
 
   async update(id: number, updateQuestionDto: UpdateQuestionDto): Promise<GenericResponsesDto> {
-    const updatedQuestion = await this.questionsRepository.update(id, updateQuestionDto);
+    const { responses, ...rest } = updateQuestionDto;
+    const updatedQuestion = await this.questionsRepository.update(id, rest);
     if (updatedQuestion.affected === 0) throw new BadRequestException('Error al actualizar la Pregunta');
+    const oldQuestion = await this.questionsRepository.findOne({ where: { id }, relations: { responses: true } });
+    let deletedResponses: Response[] = [];
+    if (oldQuestion?.responses && responses) {
+      deletedResponses = oldQuestion.responses.filter(r => !responses.map(r1 => r1.id).includes(r.id));
+    }
+    const errors: string[] = [];
+    if (responses) {
+      for (const response of responses) {
+        try {
+          if (response.id) {
+            await this.responsesService.update(response.id!, { ...response })
+          } else {
+            await this.responsesService.create({
+              questions_id: id,
+              value: response.value!,
+            })
+          }
+        } catch (error) {
+          errors.push(`Error al registrar/actualizar la respuesta: ${response}.`)
+          console.log(`Error al registrar/actualizar la respuesta: ${response}.`);
+        }
+      }
+      if (deletedResponses.length) {
+        for (const response of deletedResponses) {
+          try {
+            await this.responsesService.remove(response.id)
+          } catch (error) {
+            errors.push(`Error al eliminar la respuesta: ${response}.`)
+            console.log(`Error al eliminar la respuesta: ${response}.`);
+          }
+        }
+      }
+    }
+    if (errors.length) throw new BadRequestException('Error al crear la Pregunta');
     return { message: 'Pregunta Actualizada', statusCode: 200, error: '' };
   }
 

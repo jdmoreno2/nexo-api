@@ -3,9 +3,10 @@ import { CreateResponseDto } from './create-response.dto';
 import { IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 export class UpdateResponseDto extends PartialType(CreateResponseDto) {
-  @ApiProperty({ description: 'ID', example: 1 })
+  @ApiPropertyOptional({ description: 'ID', example: 1 })
+  @IsOptional()
   @IsNumber({}, { message: 'Debe ser un número entero' })
-  id: number
+  id?: number
 
   @ApiPropertyOptional({ description: 'Estado', example: 1, required: false })
   @IsOptional()
