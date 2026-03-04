@@ -9,6 +9,7 @@ import { ResponseFormsDto } from './dto/response/response-forms.dto';
 import { FormExistsPipe } from './decorators/forms.validator';
 import { CreateFormWithQuestionDto } from './dto/request/create-form-with-question.dto';
 import { ResponseFormWithQuestionsDto } from './dto/response/response-forms-questions.dto';
+import { UpdateFormWithQuestionDto } from './dto/request/update-form-with-questiondto';
 
 @ApiTags('Forms')
 @ApiResponse(
@@ -93,6 +94,16 @@ export class FormsController {
   @ApiOkResponse({ description: 'Formulario actualizado exitosamente', type: GenericResponsesDto })
   update(@Param('id', FormExistsPipe) id: string, @Body() updateFormDto: UpdateFormDto) {
     return this.formsService.update(+id, updateFormDto);
+  }
+
+  @Patch(':id/withQuestions')
+  @ApiOperation({
+    summary: 'Endpoint para actualizar un Formulario con Preguntas por ID',
+    description: 'Permite actualizar la información de un Formulario existente con Preguntas utilizando su ID.'
+  })
+  @ApiOkResponse({ description: 'Formulario actualizado exitosamente', type: GenericResponsesDto })
+  updateFormWithQuestions(@Param('id', FormExistsPipe) id: string, @Body() updateFormDto: UpdateFormWithQuestionDto) {
+    return this.formsService.updateFormWithQuestions(+id, updateFormDto);
   }
 
   @Delete(':id')

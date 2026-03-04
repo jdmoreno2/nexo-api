@@ -9,6 +9,8 @@ import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/paginati
 import { ResponseFormsDto } from './dto/response/response-forms.dto';
 import { CreateFormWithQuestionDto } from './dto/request/create-form-with-question.dto';
 import { QuestionsService } from '../questions/questions.service';
+import { UpdateFormWithQuestionDto } from './dto/request/update-form-with-questiondto';
+import { Question } from '../questions/entities/question.entity';
 
 @Injectable()
 export class FormsService {
@@ -118,6 +120,59 @@ export class FormsService {
     if (updatedForm.affected === 0) throw new BadRequestException('Error al actualizar el Formulario');
     return { message: 'Formulario Actualizado', statusCode: 200, error: '' };
   }
+
+  async updateFormWithQuestions(id: number, updateFormDto: UpdateFormWithQuestionDto): Promise<GenericResponsesDto> {
+    const { questions: updatedQuestions, ...rest } = updateFormDto;
+    const updatedForm = await this.formsRepository.update(id, rest);
+    if (updatedForm.affected === 0) throw new BadRequestException('Error al actualizar el Formulario');
+    const oldForm = await this.formsRepository.findOne({ where: { id }, relations: { questions: true } });
+    let deletedQuestions: Question[] = [];
+    if (oldForm && updatedQuestions) {
+      deletedQuestions = oldForm.questions.filter(q => !updatedQuestions.map(q1 => q1.id).includes(q.id));
+    }
+    const errors: string[] = [];
+    if (updatedQuestions) {
+      for (const question of updatedQuestions) {
+        try {
+          if (question.id) {
+            await this.questionsService.update(question.id, { ...question, forms_id: id });
+          } else {
+            const { responses, ...restQuestion } = question;
+            const newResponses: string[] = []
+            if (responses) {
+              responses.map(r => {
+                if (r.value) newResponses.push(r.value)
+              })
+              await this.questionsService.create({
+                description: restQuestion.description,
+                questions_types_id: restQuestion.questions_types_id!,
+                required: restQuestion.required!,
+                name: restQuestion.name!,
+                responses: newResponses,
+                forms_id: id
+              })
+            }
+          }
+        } catch (error) {
+          errors.push(`Error al registrar/actualizar la pregunta: ${question.name}.`)
+          console.log(`Error al registrar/actualizar la pregunta: ${question.name}.`);
+        }
+      }
+      if (deletedQuestions.length) {
+        for (const question of deletedQuestions) {
+          try {
+            await this.questionsService.remove(question.id);
+          } catch (error) {
+            errors.push(`Error al eliminar la pregunta: ${question.name}.`)
+            console.log(`Error al eliminar la pregunta: ${question.name}.`);
+          }
+        }
+      }
+    }
+    if (errors.length) throw new BadRequestException('Error al Actualizar el formulario');
+    return { message: 'Formulario Actualizado', statusCode: 200, error: '' };
+  }
+
 
   async remove(id: number): Promise<GenericResponsesDto> {
     const removedBranch = await this.formsRepository.update(id, { status: 0 });
