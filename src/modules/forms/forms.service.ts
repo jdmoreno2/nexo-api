@@ -138,17 +138,13 @@ export class FormsService {
             await this.questionsService.update(question.id, { ...question, forms_id: id });
           } else {
             const { responses, ...restQuestion } = question;
-            const newResponses: string[] = []
             if (responses) {
-              responses.map(r => {
-                if (r.value) newResponses.push(r.value)
-              })
               await this.questionsService.create({
                 description: restQuestion.description,
                 questions_types_id: restQuestion.questions_types_id!,
                 required: restQuestion.required!,
                 name: restQuestion.name!,
-                responses: newResponses,
+                responses: responses,
                 forms_id: id
               })
             }
