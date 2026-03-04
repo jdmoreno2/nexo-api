@@ -53,12 +53,18 @@ export class FormsService {
     const skit = (page - 1) * limit;
 
     const [result, total] = await this.formsRepository.findAndCount({
+      relations: {
+        ordersType: true
+      },
       select: {
         id: true,
         name: true,
         description: true,
         status: true,
-        subscribers_id: true
+        subscribers_id: true,
+        ordersType: {
+          name: true
+        }
       },
       where: meta.search ? [
         { name: ILike(`%${meta.search}%`) },
@@ -89,6 +95,10 @@ export class FormsService {
   async findOneWithQuestions(id: number): Promise<Form | null> {
     return this.formsRepository.createQueryBuilder("form")
       .leftJoinAndSelect(
+        "form.ordersType",
+        "ordersType",
+      )
+      .leftJoinAndSelect(
         "form.questions",
         "question",
         "question.status = :qStatus",
@@ -102,7 +112,7 @@ export class FormsService {
       )
       .leftJoinAndSelect("question.questionType", "questionType")
       .select([
-        "form.id", "form.name", "form.description", "form.status", "form.subscribers_id",
+        "form.id", "form.name", "form.description", "form.status", "form.subscribers_id", "ordersType.name",
         "question.id", "question.name", "question.description", "question.status",
         "question.questions_types_id", "questionType.name",
         "response.id", "response.value", "response.status"
