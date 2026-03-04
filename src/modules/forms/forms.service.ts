@@ -95,10 +95,6 @@ export class FormsService {
   async findOneWithQuestions(id: number): Promise<Form | null> {
     return this.formsRepository.createQueryBuilder("form")
       .leftJoinAndSelect(
-        "form.ordersType",
-        "ordersType",
-      )
-      .leftJoinAndSelect(
         "form.questions",
         "question",
         "question.status = :qStatus",
@@ -112,7 +108,7 @@ export class FormsService {
       )
       .leftJoinAndSelect("question.questionType", "questionType")
       .select([
-        "form.id", "form.name", "form.description", "form.status", "form.subscribers_id", "ordersType.name",
+        "form.id", "form.name", "form.description", "form.status", "form.subscribers_id", "form.orders_types_id",
         "question.id", "question.name", "question.description", "question.status",
         "question.questions_types_id", "questionType.name",
         "response.id", "response.value", "response.status"
