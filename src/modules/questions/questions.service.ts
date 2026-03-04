@@ -85,21 +85,19 @@ export class QuestionsService {
     if (updatedQuestion.affected === 0) throw new BadRequestException('Error al actualizar la Pregunta');
     const oldQuestion = await this.questionsRepository.findOne({ where: { id }, relations: { responses: true } });
     let deletedResponses: Response[] = [];
+    let newResponses: string[] = [];
     if (oldQuestion?.responses && responses) {
-      deletedResponses = oldQuestion.responses.filter(r => !responses.map(r1 => r1.id).includes(r.id));
+      deletedResponses = oldQuestion.responses.filter(r => !responses.includes(r.value));
+      newResponses = responses.filter(p => !oldQuestion.responses.map(r1 => r1.value).includes(p))
     }
     const errors: string[] = [];
-    if (responses) {
-      for (const response of responses) {
+    if (newResponses.length) {
+      for (const response of newResponses) {
         try {
-          if (response.id) {
-            await this.responsesService.update(response.id!, { ...response })
-          } else {
-            await this.responsesService.create({
-              questions_id: id,
-              value: response.value!,
-            })
-          }
+          await this.responsesService.create({
+            questions_id: id,
+            value: response,
+          })
         } catch (error) {
           errors.push(`Error al registrar/actualizar la respuesta: ${response}.`)
           console.log(`Error al registrar/actualizar la respuesta: ${response}.`);
