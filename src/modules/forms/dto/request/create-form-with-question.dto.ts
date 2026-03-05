@@ -4,6 +4,7 @@ import { FormAlreadyExistsConstraint } from "../../decorators/forms.validator";
 import { SubscriberExistsConstraint } from "src/modules/subscribers/decorators/subscriber.validator";
 import { Type } from "class-transformer";
 import { CreateQuestionDto } from "src/modules/questions/dto/request/create-question.dto";
+import { OrdersTypesExistsConstraint } from "src/modules/orders_types/decorators/orders-types.validator";
 
 export class CreateFormQuestionDto extends OmitType(CreateQuestionDto, ['forms_id'] as const) {
 
@@ -35,6 +36,15 @@ export class CreateFormWithQuestionDto {
   @IsInt({ message: 'Formato de Datos invalido: subscribers_id debe ser un numero entero.' })
   @Validate(SubscriberExistsConstraint)
   subscribers_id: number;
+
+  @ApiProperty({
+    description: 'ID del tipo de orden',
+    example: 1
+  })
+  @IsNotEmpty({ message: 'Faltan datos necesario: orders_types_id.' })
+  @IsInt({ message: 'Formato de Datos invalido: orders_types_id debe ser un numero entero.' })
+  @Validate(OrdersTypesExistsConstraint)
+  orders_types_id: number;
 
   @ApiProperty({
     description: 'Preguntas',
