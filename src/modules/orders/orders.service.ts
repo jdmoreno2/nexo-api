@@ -65,7 +65,9 @@ export class OrdersService {
 
     const [result, total] = await this.ordersRepository.findAndCount({
       relations: {
-        ordersType: true,
+        ordersType: {
+          forms: true
+        },
         branch: true
       },
       select: {
@@ -76,7 +78,10 @@ export class OrdersService {
         orders_types_id: true,
         branches_id: true,
         ordersType: {
-          name: true
+          name: true,
+          forms: {
+            id: true
+          }
         },
         branch: {
           name: true
@@ -115,7 +120,9 @@ export class OrdersService {
   async findOne(id: number): Promise<ResponseOrdersDto | null> {
     return this.ordersRepository.findOne({
       relations: {
-        ordersType: true,
+        ordersType: {
+          forms: true
+        },
         branch: true,
         tasks: {
           user: true,
@@ -129,7 +136,10 @@ export class OrdersService {
         orders_types_id: true,
         branches_id: true,
         ordersType: {
-          name: true
+          name: true,
+          forms: {
+            id: true
+          }
         },
         branch: {
           name: true,
@@ -168,7 +178,9 @@ export class OrdersService {
 
     const [result, total] = await this.ordersRepository.findAndCount({
       relations: {
-        ordersType: true,
+        ordersType: {
+          forms: true
+        },
         branch: true,
         tasks: {
           equipment: true
@@ -182,7 +194,10 @@ export class OrdersService {
         orders_types_id: true,
         branches_id: true,
         ordersType: {
-          name: true
+          name: true,
+          forms: {
+            id: true
+          }
         },
         branch: {
           name: true
@@ -250,7 +265,9 @@ export class OrdersService {
 
     return this.ordersRepository.findOne({
       relations: {
-        ordersType: true,
+        ordersType: {
+          forms: true
+        },
         branch: true,
         tasks: {
           user: true,
@@ -264,7 +281,10 @@ export class OrdersService {
         orders_types_id: true,
         branches_id: true,
         ordersType: {
-          name: true
+          name: true,
+          forms: {
+            id: true
+          }
         },
         branch: {
           name: true,
