@@ -3,10 +3,11 @@ import { CreateUserDto } from './dto/request/create-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UsersHasRoles } from './entities/user.entity';
-import { In, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { PaginationDto, PaginationRequestMetaDto } from 'src/common/dto/pagination-response.dto';
 import * as bcrypt from 'bcrypt';
 import { GenericResponsesDto } from 'src/common/dto/generic-response.dto';
+import { ResponseUsersCloseTaskDto } from './dto/response/response-users-close-task.dto';
 
 @Injectable()
 export class UsersService {
@@ -45,6 +46,12 @@ export class UsersService {
         },
         identificationType: true
       },
+      where: meta.search ? [
+        { name: ILike(`%${meta.search}%`) },
+        { lastname: ILike(`%${meta.search}%`) },
+        { email: ILike(`%${meta.search}%`) },
+        { usersHasRoles: { role: { name: ILike(`%${meta.search}%`) } } }
+      ] : {},
       select: {
         id: true,
         identifier: true,
@@ -73,6 +80,76 @@ export class UsersService {
 
     return {
       data: users,
+      meta: {
+        page: page,
+        limit: limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      }
+    }
+  }
+
+  async findCloseTaskUsers(meta: PaginationRequestMetaDto): Promise<PaginationDto<ResponseUsersCloseTaskDto>> {
+    const page = meta?.page || 1;
+    const limit = meta?.limit || 10;
+    const [users, total] = await this.userRepository.findAndCount({
+      relations: {
+        usersHasRoles: {
+          role: {
+            RolesHasPermissions: {
+              permission: true
+            }
+          }
+        }
+      },
+      where: meta.search ?
+        [
+          {
+            name: ILike(`%${meta.search}%`),
+            usersHasRoles: {
+              role: {
+                RolesHasPermissions: {
+                  permission: {
+                    name: 'CLOSE_TASK'
+                  }
+                }
+              }
+            }
+          },
+          {
+            lastname: ILike(`%${meta.search}%`),
+            usersHasRoles: {
+              role: {
+                RolesHasPermissions: {
+                  permission: {
+                    name: 'CLOSE_TASK'
+                  }
+                }
+              }
+            }
+          }] : {
+          usersHasRoles: {
+            role: {
+              RolesHasPermissions: {
+                permission: {
+                  name: 'CLOSE_TASK'
+                }
+              }
+            }
+          }
+        },
+      select: {
+        id: true,
+        identifier: true,
+        name: true,
+        lastname: true
+      },
+      order: { [meta.orderBy as string]: meta.order },
+      skip: (page - 1) * limit,
+      take: limit,
+    })
+    return {
+      data: users.map(user => ({ id: user.id, identifier: user.identifier, name: user.name, lastname: user.lastname })),
       meta: {
         page: page,
         limit: limit,

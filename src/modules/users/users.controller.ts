@@ -75,6 +75,13 @@ export class UsersController {
     return await this.usersService.findAll(meta);
   }
 
+  @ApiOperation({ summary: 'Listar todos los usuarios que pueden cerrar tareas' })
+  @Get('close-tasks')
+  @ApiOkResponse({ description: 'Usuarios listados correctamente', type: PaginationDto<User> })
+  async findCloseTaskUsers(@Query() meta: PaginationRequestMetaDto) {
+    return await this.usersService.findCloseTaskUsers(meta);
+  }
+
   @ApiOperation({ summary: 'Listar usuario por id' })
   @Get(':id')
   @ApiOkResponse({ description: 'Usuario consultado correctamente', type: PaginationDto<User> })
