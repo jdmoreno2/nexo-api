@@ -1,7 +1,7 @@
 import { OrdersType } from "src/modules/orders_types/entities/orders_type.entity"
 import { Question } from "src/modules/questions/entities/question.entity"
 import { Subscriber } from "src/modules/subscribers/entities/subscriber.entity"
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('forms')
 export class Form {
@@ -36,7 +36,7 @@ export class Form {
   @OneToMany(() => Question, (question) => question.form)
   questions: Question[];
 
-  @ManyToOne(() => OrdersType, (ordersType) => ordersType.id)
+  @OneToOne(() => OrdersType, (ordersType) => ordersType.id)
   @JoinColumn({ name: 'orders_types_id' })
   ordersType: OrdersType;
 }
