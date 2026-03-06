@@ -1,5 +1,6 @@
+import { Form } from "src/modules/forms/entities/form.entity";
 import { Subscriber } from "src/modules/subscribers/entities/subscriber.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('orders_types')
 export class OrdersType {
@@ -27,4 +28,8 @@ export class OrdersType {
   @ManyToOne(() => Subscriber, (subscriber) => subscriber.id)
   @JoinColumn({ name: 'subscribers_id' })
   subscriber: Subscriber;
+
+  @OneToOne(() => Form, (form) => form.ordersType)
+  forms: Form;
+
 }
