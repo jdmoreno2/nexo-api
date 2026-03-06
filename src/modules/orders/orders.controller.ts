@@ -47,12 +47,23 @@ export class OrdersController {
 
   @Get()
   @ApiOperation({
-    summary: 'Endpoint para obtener todos los Equipos',
+    summary: 'Endpoint para obtener todos las ordenes',
     description: 'Permite obtener una lista paginada de todos las Ordenes registradas en el sistema.'
   })
   @ApiOkResponse({ description: 'Lista paginada de Ordenes', type: PaginationDto<ResponseOrdersDto> })
   findAll(@Query() meta: PaginationRequestMetaDto) {
     return this.ordersService.findAll(meta);
+  }
+
+
+  @Get('/user')
+  @ApiOperation({
+    summary: 'Endpoint para obtener todos las ordenes asignadas a un usuario',
+    description: 'Permite obtener una lista paginada de todos las Ordenes asignadas a un usuario'
+  })
+  @ApiOkResponse({ description: 'Lista paginada de Ordenes', type: PaginationDto<ResponseOrdersDto> })
+  findUserOrders(@Query() meta: PaginationRequestMetaDto) {
+    return this.ordersService.findUserOrders(meta);
   }
 
   @Get(':id')
@@ -63,6 +74,16 @@ export class OrdersController {
   @ApiOkResponse({ description: 'Orden obtenida exitosamente', type: ResponseOrdersDto })
   findOne(@Param('id', OrdersExistsPipe) id: string) {
     return this.ordersService.findOne(+id);
+  }
+
+  @Get(':id/user')
+  @ApiOperation({
+    summary: 'Endpoint para obtener una orden por ID filtrando las tareas del usuario logueado',
+    description: 'Permite obtener la información de una orden existente utilizando su ID filtrando las tareas del usuario logueado.'
+  })
+  @ApiOkResponse({ description: 'Orden obtenida exitosamente', type: ResponseOrdersDto })
+  findOneOrderUser(@Param('id', OrdersExistsPipe) id: string) {
+    return this.ordersService.findOneOrderUser(+id);
   }
 
   @Patch(':id')
